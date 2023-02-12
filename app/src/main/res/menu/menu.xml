@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+ <item
+     android:id="@+id/noneMap"
+     android:title="None"></item>
+
+    <item
+        android:id="@+id/NoremalMap"
+        android:title="Normal Map"></item>
+
+    <item
+        android:id="@+id/satelliteMap"
+        android:title="Satellite Map"></item>
+
+    <item
+        android:id="@+id/maphybride"
+        android:title="Maphybride Map"></item>
+
+    <item
+        android:id="@+id/mapTerrain"
+        android:title="MapTerrain Map"></item>
+</menu>

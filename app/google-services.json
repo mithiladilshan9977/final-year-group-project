@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "753783961819",
+    "project_id": "thridfinalyearproject",
+    "storage_bucket": "thridfinalyearproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753783961819:android:dd7617ba4280bb82dcf4fe",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753783961819-630ln9sd4v4b0ols4jgcrqpv3htkgsfb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5VA9WRoqflcKmwOQAHVuu-uZdxkSSdaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753783961819-630ln9sd4v4b0ols4jgcrqpv3htkgsfb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
