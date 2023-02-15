@@ -48,7 +48,11 @@ public class customerLoginActivity extends AppCompatActivity {
         mVeifiedEmalText = (TextView) findViewById(R.id.verifiedText);
         mAuth = FirebaseAuth.getInstance();
 
-
+        if(mAuth.getCurrentUser() != null){
+            Intent intent = new Intent(customerLoginActivity.this, splashScreen.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
 
         LoadingDialog loadingDialog =new LoadingDialog(customerLoginActivity.this);
 

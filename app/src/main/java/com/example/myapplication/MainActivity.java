@@ -16,6 +16,8 @@ Button mapbtn , mcustomer , mDriver , submitbtn;
 
 private LinearLayout noInterConnection;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +26,9 @@ private LinearLayout noInterConnection;
         mcustomer = findViewById(R.id.customer);
         mDriver = findViewById(R.id.driver);
         noInterConnection= (LinearLayout) findViewById(R.id.nointerconnectionLayout);
+
+
+
 
        if(!is_Connected()){
            noInterConnection.setVisibility(View.VISIBLE);

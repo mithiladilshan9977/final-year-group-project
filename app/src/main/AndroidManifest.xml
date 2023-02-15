@@ -17,6 +17,11 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".splashScreen"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity
             android:name=".ShowDriverChatPage"
             android:exported="false" />
         <activity
@@ -33,7 +38,9 @@
             android:exported="false" />
         <activity
             android:name=".customerMapActivity"
-            android:exported="false" />
+            android:exported="false"
+
+            />
         <activity
             android:name=".customerLoginActivity"
             android:exported="false" />

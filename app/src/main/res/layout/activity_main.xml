@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/nointerconnectionLayout"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         >
 <ImageView
     android:layout_width="250dp"
@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Customer"
-        android:visibility="gone"
+        android:visibility="visible"
         />
 
     <Button
@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Driver"
-        android:visibility="gone"
+        android:visibility="visible"
 
         />
 

@@ -7,6 +7,8 @@
     xmlns:map="http://schemas.android.com/apk/res-auto"
     tools:context=".customerMapActivity">
 
+
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"

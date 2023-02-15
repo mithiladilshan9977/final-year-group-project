@@ -95,10 +95,14 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
     private TextView mresturent, mhospitel;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_map);
+
+
 
 
 
@@ -119,6 +123,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
         destinationLatLng = new LatLng(0.0,0.0);
        mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.userX);
+
+
 
         mresturent.setOnClickListener(new View.OnClickListener() {
             @Override
