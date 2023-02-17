@@ -6,15 +6,38 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".driverSetting">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:elevation="20dp"
+        android:background="@color/brown"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:layout_marginStart="15dp"/>
+    </RelativeLayout>
+
 
     <ImageView
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:id="@+id/profileImage"
         android:layout_gravity="center"
-        android:src="@mipmap/carnew_ic_launcher"
+        android:src="@drawable/user_profile"
         android:layout_marginTop="10dp"
         />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:layout_marginTop="15dp"
+        >
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,6 +68,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/radioGroup"
     android:orientation="horizontal"
+    android:layout_margin="12dp"
     >
      <RadioButton
          android:layout_width="wrap_content"
@@ -65,15 +89,23 @@
 </RadioGroup>
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Confirm"
+        android:backgroundTint="@color/brown"
+        android:elevation="5dp"
+
+        android:textColor="@color/white"
         android:id="@+id/confirm"/>
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Go back"
+        android:backgroundTint="@color/brown"
+        android:elevation="5dp"
+
+        android:textColor="@color/white"
         android:id="@+id/back"/>
 
-
+    </LinearLayout>
 </LinearLayout>

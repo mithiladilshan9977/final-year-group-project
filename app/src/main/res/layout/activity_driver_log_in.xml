@@ -5,20 +5,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:background="@color/white"
     tools:context=".DriverLogInActivity">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Authority registration"
-        android:layout_marginBottom="10dp"
-        />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:elevation="20dp"
+        android:background="@color/brown">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Officer Registration"
+            android:layout_centerVertical="true"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:layout_marginStart="15dp"
+            />
+    </RelativeLayout>
+    <ImageView
+        android:layout_width="230dp"
+        android:layout_height="230dp"
+        android:src="@drawable/applesignup"
+        android:layout_gravity="center"
+        android:id="@+id/loginimage"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+
+    <ImageView
+        android:layout_width="230dp"
+        android:layout_height="230dp"
+
+        android:src="@drawable/applelogin"
+        android:layout_gravity="center"
+       android:id="@+id/signupimage"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="15dp"
+        android:visibility="gone"
+        android:id="@+id/loginLenerLayout"
+        android:orientation="vertical">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email address"
+            android:textColorHint="@color/brown"
+            android:id="@+id/emailLogin"
+            android:inputType="textEmailAddress"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:textColorHint="@color/brown"
+            android:id="@+id/passwordLogin"
+            android:inputType="textPassword"
+            />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+
+        android:id="@+id/registerLinerLayout"
+        android:orientation="vertical">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email address"
+        android:textColorHint="@color/brown"
         android:id="@+id/email"
         />
 
@@ -26,6 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
+        android:textColorHint="@color/brown"
         android:id="@+id/password"
         android:inputType="textPassword"
         />
@@ -34,6 +101,7 @@
         android:layout_height="wrap_content"
         android:hint="Enter password again"
         android:id="@+id/reenterpassword"
+        android:textColorHint="@color/brown"
         android:inputType="textPassword"
         />
     <EditText
@@ -41,20 +109,43 @@
         android:layout_height="wrap_content"
         android:hint="NIC number"
         android:id="@+id/nicnumber"
+        android:textColorHint="@color/brown"
         android:inputType="number"
         />
 
 
-
+    </LinearLayout>
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Register"
+         android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:backgroundTint="@color/brown"
+        android:elevation="5dp"
+        android:layout_marginTop="19dp"
+        android:textColor="@color/white"
         android:id="@+id/registerButton"/>
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
+        android:text="Log in"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:backgroundTint="@color/brown"
+        android:elevation="5dp"
+        android:textColor="@color/white"
+        android:id="@+id/loginButton"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:text="Go back"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:backgroundTint="@color/brown"
+        android:elevation="5dp"
+        android:textColor="@color/white"
         android:id="@+id/goback"/>
 
 
@@ -64,35 +155,7 @@
         android:orientation="vertical"
         android:layout_marginTop="80dp"
         >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Authority Log in"
 
-            />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email address"
-            android:id="@+id/emailLogin"
-            android:inputType="textEmailAddress"
-            />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password"
-            android:id="@+id/passwordLogin"
-            android:inputType="textPassword"
-            />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Log in"
-            android:id="@+id/loginButton"/>
 
         <TextView
             android:layout_width="wrap_content"

@@ -5,22 +5,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="15dp"
+  android:background="@color/white"
     tools:context=".customerLoginActivity">
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:elevation="20dp"
+    android:background="@color/brown">
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="User Registration"
+          android:layout_centerVertical="true"
+          android:textSize="20dp"
+          android:textColor="@color/white"
+          android:layout_marginStart="15dp"
+          />
+</RelativeLayout>
+    <ImageView
+        android:layout_width="230dp"
+        android:layout_height="230dp"
+        android:src="@drawable/applesignup"
         android:layout_gravity="center"
-        android:text="User registration"
-        android:layout_marginBottom="10dp"
-        />
+        android:id="@+id/loginimage"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+         android:src="@drawable/applelogin"
+        android:id="@+id/signupimage"
+        android:layout_gravity="center"
+        android:layout_marginTop="18dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/registerLinerLayout"
+
+        android:padding="15dp"
+        android:orientation="vertical">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email address"
         android:id="@+id/email"
+
+        android:textColorHint="@color/brown"
         android:inputType="textEmailAddress"
         />
 
@@ -29,6 +63,7 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:id="@+id/password"
+        android:textColorHint="@color/brown"
         android:inputType="textPassword"
         />
     <EditText
@@ -36,6 +71,7 @@
         android:layout_height="wrap_content"
         android:hint="Enter password again"
         android:id="@+id/reenterpassword"
+        android:textColorHint="@color/brown"
         android:inputType="textPassword"
         />
     <EditText
@@ -44,42 +80,26 @@
         android:hint="NIC number"
         android:id="@+id/nicnumber"
         android:inputType="number"
+        android:textColorHint="@color/brown"
         />
-
-
-
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:id="@+id/registerButton"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Go back"
-        android:id="@+id/goback"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="80dp"
+        android:padding="15dp"
+        android:visibility="gone"
+        android:id="@+id/loginLenerLayout"
         >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="User Log in"
 
-            />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email address"
             android:id="@+id/emailLogin"
+            android:textColorHint="@color/brown"
             android:inputType="textEmailAddress"
             />
 
@@ -88,24 +108,48 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:id="@+id/passwordLogin"
+            android:textColorHint="@color/brown"
             android:inputType="textPassword"
             />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Log in"
-            android:id="@+id/loginButton"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Verfiedddd"
-            android:visibility="gone"
-            android:textSize="15dp"
-            android:id="@+id/verifiedText"
-            android:layout_marginTop="10dp"
-            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingEnd="15dp">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Register"
+
+         android:backgroundTint="@color/brown"
+        android:elevation="5dp"
+        android:textColor="@color/white"
+        android:id="@+id/registerButton"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Log in"
+        android:textColor="@color/white"
+        android:elevation="5dp"
+        android:backgroundTint="@color/brown"
+        android:id="@+id/loginButton"/>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Go back"
+        android:textColor="@color/white"
+        android:elevation="5dp"
+        android:backgroundTint="@color/brown"
+        android:id="@+id/goback"/>
+
     </LinearLayout>
 
 

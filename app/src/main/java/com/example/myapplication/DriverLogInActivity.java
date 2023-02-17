@@ -6,6 +6,8 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +30,8 @@ public class DriverLogInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebasequthlistener;
     private TextView mVeifiedEmalText;
-
+    LinearLayout mregisterLinerLayout, mloginLenerLayout;
+    private ImageView mloginimage , msignupimage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,26 @@ public class DriverLogInActivity extends AppCompatActivity {
         mNICnumber = (EditText) findViewById(R.id.nicnumber);
         mVeifiedEmalText = (TextView) findViewById(R.id.verifiedText);
         mAuth = FirebaseAuth.getInstance();
+
+        mloginimage = (ImageView) findViewById(R.id.loginimage);
+        msignupimage = (ImageView) findViewById(R.id.signupimage);
+
+        mregisterLinerLayout = (LinearLayout) findViewById(R.id.registerLinerLayout);
+        mloginLenerLayout = (LinearLayout) findViewById(R.id.loginLenerLayout);
+
+        mregisterLinerLayout.setVisibility(View.VISIBLE);
+        mloginLenerLayout.setVisibility(View.GONE);
+
+        //images
+        mloginimage.setVisibility(View.VISIBLE);
+        msignupimage.setVisibility(View.GONE);
+
+        if (mAuth.getCurrentUser() != null){
+            Intent intent = new Intent(DriverLogInActivity.this, officersplashactivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
         LoadingDialog loadingDialog =new LoadingDialog(DriverLogInActivity.this);
         firebasequthlistener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -66,6 +89,13 @@ public class DriverLogInActivity extends AppCompatActivity {
         mRegistertion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mregisterLinerLayout.setVisibility(View.VISIBLE);
+                mloginLenerLayout.setVisibility(View.GONE);
+
+                mloginimage.setVisibility(View.VISIBLE);
+                msignupimage.setVisibility(View.GONE);
+
+
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 final String reenterpassword = mReenterPassword.getText().toString();
@@ -153,6 +183,12 @@ public class DriverLogInActivity extends AppCompatActivity {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mregisterLinerLayout.setVisibility(View.GONE);
+                mloginLenerLayout.setVisibility(View.VISIBLE);
+
+                mloginimage.setVisibility(View.GONE);
+                msignupimage.setVisibility(View.VISIBLE);
+
                 final String email = mEmailLogin.getText().toString();
                 final String passwordnew = mPasswordLogin.getText().toString();
                 final FirebaseAuth newauth = FirebaseAuth.getInstance(); ;

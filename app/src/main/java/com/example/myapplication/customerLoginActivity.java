@@ -6,8 +6,9 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,7 +31,9 @@ public class customerLoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebasequthlistener;
     private ProgressBar mPrograssBar;
-    private TextView mVeifiedEmalText;
+
+    private ImageView mloginimage , msignupimage;
+    LinearLayout mregisterLinerLayout, mloginLenerLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +48,21 @@ public class customerLoginActivity extends AppCompatActivity {
         mEmailLogin = (EditText) findViewById(R.id.emailLogin);
         mPasswordLogin = (EditText) findViewById(R.id.passwordLogin);
         mNICnumber = (EditText) findViewById(R.id.nicnumber);
-        mVeifiedEmalText = (TextView) findViewById(R.id.verifiedText);
+
         mAuth = FirebaseAuth.getInstance();
+
+        mregisterLinerLayout = (LinearLayout) findViewById(R.id.registerLinerLayout);
+        mloginLenerLayout = (LinearLayout) findViewById(R.id.loginLenerLayout);
+
+        mregisterLinerLayout.setVisibility(View.VISIBLE);
+        mloginLenerLayout.setVisibility(View.GONE);
+
+        //images
+        mloginimage = (ImageView) findViewById(R.id.loginimage);
+        msignupimage = (ImageView) findViewById(R.id.signupimage);
+
+        mregisterLinerLayout.setVisibility(View.VISIBLE);
+        mloginLenerLayout.setVisibility(View.GONE);
 
         if(mAuth.getCurrentUser() != null){
             Intent intent = new Intent(customerLoginActivity.this, splashScreen.class);
@@ -75,6 +91,15 @@ public class customerLoginActivity extends AppCompatActivity {
         mRegistertion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                mregisterLinerLayout.setVisibility(View.VISIBLE);
+                mloginLenerLayout.setVisibility(View.GONE);
+
+                //images
+                mloginimage.setVisibility(View.VISIBLE);
+                msignupimage.setVisibility(View.GONE);
+
+
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 final String reenterpassword = mReenterPassword.getText().toString();
@@ -164,6 +189,15 @@ public class customerLoginActivity extends AppCompatActivity {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                mregisterLinerLayout.setVisibility(View.GONE);
+                mloginLenerLayout.setVisibility(View.VISIBLE);
+
+                //images
+                mloginimage.setVisibility(View.GONE);
+                msignupimage.setVisibility(View.VISIBLE);
+
+
                 final String email = mEmailLogin.getText().toString();
                 final String password = mPasswordLogin.getText().toString();
                 final FirebaseAuth newauth = FirebaseAuth.getInstance(); ;
@@ -201,8 +235,7 @@ public class customerLoginActivity extends AppCompatActivity {
 
                             }else{
                                 loadingDialog.stopAlert();
-                                mVeifiedEmalText.setVisibility(View.VISIBLE);
-                                mVeifiedEmalText.setText("Please verify your Email");
+
 
 
                             }

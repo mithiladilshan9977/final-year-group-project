@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
+
     tools:context=".MainActivity">
 
 
@@ -15,12 +15,13 @@
         android:id="@+id/nointerconnectionLayout"
         android:orientation="vertical"
         android:visibility="gone"
+
         >
 <ImageView
     android:layout_width="250dp"
     android:layout_height="250dp"
     android:layout_gravity="center"
-    android:src="@drawable/nointernet"
+    android:src="@drawable/nointernetconnection"
     android:layout_marginTop="60dp"
     android:id="@+id/nointernetImage"
     />
@@ -36,36 +37,102 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No internet connection. Make sure that Wi-Fis or mobile data is turned on, then try again."
+        android:padding="15dp"
+        android:text="No internet connection. Make sure that Wi-Fi or mobile data is turned on, then try again."
         android:layout_gravity="center"
- android:layout_marginTop="10dp"
-        android:textSize="18sp"
+ android:layout_marginTop="18dp"
+        android:textSize="14sp"
         />
 
     </LinearLayout>
 
+<ImageView
+    android:layout_width="250dp"
+    android:layout_height="250dp"
+    android:layout_centerHorizontal="true"
+    android:id="@+id/mainimage"
+    android:layout_marginTop="20dp"
+    android:src="@drawable/logout_icon"/>
 
-
-
-
-    <Button
-        android:id="@+id/customer"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Customer"
-        android:visibility="visible"
-        />
+        android:layout_below="@+id/mainimage"
+        android:layout_marginTop="130dp"
+        android:id="@+id/holder"
+        android:gravity="center">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
 
-    <Button
-        android:id="@+id/driver"
-        android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/customer"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/white"
+                android:elevation="10dp"
+                android:src="@mipmap/carnew_ic_launcher"
+                android:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/customer"
+                android:text="Customer"
+                android:layout_marginStart="34dp"
+                android:layout_marginTop="30dp"
+                android:id="@+id/customertext"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="30dp"
+                android:id="@+id/officertext"
+                  android:layout_below="@+id/driver"
+                android:layout_toEndOf="@+id/customertext"
+                android:text="Officer"
+                android:textSize="20sp" />
+
+
+            <ImageButton
+                android:id="@+id/driver"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_toEndOf="@+id/customer"
+
+                android:background="@color/white"
+                android:elevation="10dp"
+                android:src="@mipmap/carnew_ic_launcher"
+                android:visibility="visible" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Driver"
-        android:visibility="visible"
-
+        android:text="Need help ? Tap over here."
+        android:layout_below="@+id/holder"
+        android:layout_marginStart="50dp"
+        android:id="@+id/openEmail"
+        android:textColor="@color/purple_700"
+        android:layout_marginTop="40dp"
         />
 
 
 
 
-</LinearLayout>
+
+</RelativeLayout>

@@ -5,21 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
+
     tools:context=".customerSettingsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:elevation="20dp"
+        android:background="@color/brown"
+        >
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Settings"
+             android:layout_centerVertical="true"
+             android:textColor="@color/white"
+             android:textSize="25sp"
+             android:layout_marginStart="15dp"/>
+    </RelativeLayout>
 
     <ImageView
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:id="@+id/profileImage"
         android:layout_gravity="center"
-        android:src="@mipmap/carnew_ic_launcher"
+        android:elevation="15dp"
+        android:src="@drawable/user_profile"
         android:layout_marginTop="10dp"
         />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Username"
+        android:layout_marginTop="15dp"
+        android:textColorHint="@color/brown"
         android:id="@+id/name"
 
         />
@@ -28,20 +53,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Phone number"
+        android:textColorHint="@color/brown"
         android:id="@+id/phonenumebr"
         android:inputType="number"
 
         />
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Confirm"
+        android:layout_marginTop="23dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/brown"
+        android:textColorHint="@color/white"
         android:id="@+id/confirm"/>
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Go back"
+        android:backgroundTint="@color/brown"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
         android:id="@+id/back"/>
+    </LinearLayout>
 
 </LinearLayout>

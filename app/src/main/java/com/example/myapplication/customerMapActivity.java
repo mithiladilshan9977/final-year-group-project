@@ -24,8 +24,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -94,6 +97,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
     private RatingBar mRatingBar;
     private TextView mresturent, mhospitel;
 
+    public DrawerLayout drawerLayout;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
 
 
 
@@ -105,6 +110,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
 
 
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
 
         logoutbtn = findViewById(R.id.logoutbutton);
         mrequest = findViewById(R.id.request);
@@ -123,6 +130,13 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
         destinationLatLng = new LatLng(0.0,0.0);
        mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.userX);
+
+
+
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
@@ -179,13 +193,13 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                     pickuplocation =  new LatLng(latitudenew ,longitudenew );
 
                     MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.title("Pick me here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.carnew_ic_launcher));
+                    markerOptions.title("I need help").icon(BitmapDescriptorFactory.fromResource(R.mipmap.carnew_ic_launcher));
                     markerOptions.position(pickuplocation);
                     pickUpMaker = googleMap.addMarker(markerOptions);
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(pickuplocation, 15);
                     googleMap.animateCamera(cameraUpdate);
 
-                    mrequest.setText("Calling request");
+                    mrequest.setText("Calling...");
                     getClosestDriver();
                 }
 
@@ -203,6 +217,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                 startActivity(intent);
                 finish();
                 return;
+
             }
         });
         checkPermission();
@@ -235,6 +250,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
 
     }
+
 //            AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
 //            getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment1);
 //
@@ -276,7 +292,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                                      getDriverLocation();
                                      gerDriverInfo();
                                      gethasRiderEnded();
-                                     mrequest.setText("Looking for driver location");
+                                     mrequest.setText("Looking for your request");
                                  }
                              }
                         }
@@ -641,15 +657,39 @@ private  DatabaseReference drivehasendedRef;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+
           getMenuInflater().inflate(R.menu.menu, menu);
+
           return true;
     }
 
+
+    @Override
+    public void onBackPressed() {
+
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            if(item.getItemId() == R.id.settingsPage){
+                Toast.makeText(customerMapActivity.this, "aaaa", Toast.LENGTH_LONG).show();
+
+                googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+            }
+            return true;
+        }
+
      if(item.getItemId() == R.id.noneMap){
          googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-     }
+       }
         if(item.getItemId() == R.id.NoremalMap){
             googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }
@@ -661,7 +701,9 @@ private  DatabaseReference drivehasendedRef;
         }
         if(item.getItemId() == R.id.mapTerrain){
             googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
         }
+
 
         return super.onOptionsItemSelected(item);
     }
