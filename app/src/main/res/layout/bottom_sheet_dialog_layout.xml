@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        >
+
+        <RadioButton
+            android:id="@+id/userX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Police" />
+
+        <RadioButton
+            android:id="@+id/userblack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hospitel" />
+
+        <RadioButton
+            android:id="@+id/userxl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CEB" />
+
+    </RadioGroup>
+
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/request"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:text="Customer make call"
+        android:elevation="5dp"
+        android:layout_marginTop="19dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/brown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</LinearLayout>

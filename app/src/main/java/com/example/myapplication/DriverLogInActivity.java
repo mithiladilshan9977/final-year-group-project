@@ -62,11 +62,11 @@ public class DriverLogInActivity extends AppCompatActivity {
         mloginimage.setVisibility(View.VISIBLE);
         msignupimage.setVisibility(View.GONE);
 
-        if (mAuth.getCurrentUser() != null){
-            Intent intent = new Intent(DriverLogInActivity.this, officersplashactivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
+//        if (mAuth.getCurrentUser() != null){
+//            Intent intent = new Intent(DriverLogInActivity.this, officersplashactivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//        }
 
         LoadingDialog loadingDialog =new LoadingDialog(DriverLogInActivity.this);
         firebasequthlistener = new FirebaseAuth.AuthStateListener() {
@@ -223,9 +223,10 @@ public class DriverLogInActivity extends AppCompatActivity {
 
 
                             }else{
+                                Toast.makeText(DriverLogInActivity.this ,  "Please verify the Email" , Toast.LENGTH_LONG).show();
+
                                 loadingDialog.stopAlert();
-                                mVeifiedEmalText.setVisibility(View.VISIBLE);
-                                mVeifiedEmalText.setText("Please verify your Email");
+
 
 
                             }

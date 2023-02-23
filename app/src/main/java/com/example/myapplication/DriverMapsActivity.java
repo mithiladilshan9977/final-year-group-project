@@ -10,15 +10,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
+
 import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
@@ -84,6 +91,11 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     Double driverLat , driverLon;
     LatLng pickupLatLan;
+    public DrawerLayout drawerLayout;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
+
+ androidx.appcompat.widget.Toolbar toolbar;
+
 
 
     @Override
@@ -98,6 +110,12 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         mRrideStatus = findViewById(R.id.rideStatus);
         polylines = new ArrayList<>();
         logoutbtn = findViewById(R.id.logoutbutton);
+
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+
+//        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+//        actionBarDrawerToggle.syncState();
 
 
 
@@ -224,28 +242,36 @@ private Marker pickUpMaker;
  Long timeStamp =  System.currentTimeMillis()/1000;
      return timeStamp;
  }
+
     private void getAssideCustomer() {
+        //customerRiderID at the end
         String driverid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference assigedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverid).child("customerRiderID");
+        DatabaseReference assigedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverid);
         assigedCustomerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0) {
-                    if (datasnapshot.exists()) {
+
+                    if (datasnapshot.exists() && datasnapshot.getChildrenCount() > 0) {
+
+                          Map<String , Object> map = (Map<String , Object>) datasnapshot.getValue();
+
                         status = 1;
                             customerID =  datasnapshot.getValue().toString();
+
+
+                        if (map.get("customerRiderID") != null){
+                            customerID = map.get("customerRiderID").toString();
+                        }
                              getAssigedCustomerPickLocation();
                              getAssigedCustomerInfo();
 
 
                     }else{
+                        Toast.makeText(DriverMapsActivity.this, "No dataaaa" , Toast.LENGTH_SHORT).show();
                        endRide();
 
                     }
-                }
-                else{
-                    Toast.makeText(DriverMapsActivity.this, "No data" , Toast.LENGTH_SHORT).show();
-                }
+
 
 
             }
@@ -285,7 +311,41 @@ private Marker pickUpMaker;
             });
         }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
 
+
+        getMenuInflater().inflate(R.menu.navigation_menu, menu);
+
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            if(item.getItemId() == R.id.settingsPage){
+
+                Toast.makeText(DriverMapsActivity.this, "No settings" , Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
+
+
+
+
+
+        return super.onOptionsItemSelected(item);
+    }
     Marker pickUpMarker;
     private  DatabaseReference assigedCustomerPickupLocationRef;
     private  ValueEventListener assigedCustomerPickupLocationRefLisner;
@@ -311,7 +371,7 @@ private Marker pickUpMaker;
                     }
                     LatLng driverlatLng = new LatLng(locationLat, locationLng);
 
-                    pickUpMarker= googleMap.addMarker(new MarkerOptions().position(driverlatLng).title("pick up location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.carnew_ic_launcher)));
+                    pickUpMarker= googleMap.addMarker(new MarkerOptions().position(driverlatLng).title("pick up location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
                     getRouterMaker(driverlatLng);
 
                 }
@@ -472,8 +532,7 @@ private Marker pickUpMaker;
     private void getCurrentLocationUpdate() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(DriverMapsActivity.this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
+
 
             return;
         }
@@ -483,16 +542,18 @@ private Marker pickUpMaker;
                 super.onLocationResult(locationResult);
 
                 String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
                 DatabaseReference refWorking = FirebaseDatabase.getInstance().getReference("driverWorking");
+
+                DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
 
                 GeoFire geoFireAvailable = new GeoFire(refAvailabel);
                 GeoFire geoFireWorking = new GeoFire(refWorking);
 
+
                   driverLat = locationResult.getLastLocation().getLatitude();
                   driverLon = locationResult.getLastLocation().getLongitude();
 
-                  Toast.makeText(getApplicationContext() , driverLat +" : "+ driverLon + " apple" , Toast.LENGTH_LONG).show();
+
 
                 if(getApplicationContext() !=null) {
                  switch (customerID){
@@ -545,10 +606,18 @@ private Marker pickUpMaker;
 
     @Override
     protected void onStop() {
-        super.onStop();
         if(!isLoggingOut){
             disconnectDriver();
         }
+        String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
+
+
+        GeoFire geoFireAvailable = new GeoFire(refAvailabel);
+        geoFireAvailable.removeLocation(userid);
+
+        super.onStop();
+
 
     }
 

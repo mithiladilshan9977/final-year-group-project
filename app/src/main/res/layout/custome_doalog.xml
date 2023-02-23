@@ -7,10 +7,10 @@
     <ImageView
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@mipmap/carnew_ic_launcher"
+        android:src="@drawable/applogo"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="12dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar

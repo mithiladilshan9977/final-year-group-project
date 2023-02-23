@@ -24,11 +24,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -58,6 +55,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -81,7 +79,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
     GoogleMap googleMap;
     LocationRequest locationRequest;
     FusedLocationProviderClient fusedLocationProviderClient;
-    Button logoutbtn , mrequest, msettings , mHistory;
+    Button logoutbtn , mrequest  , show;
     Location mLastLocation;
     Double latitudenew , longitudenew;
     LatLng pickuplocation , destinationLatLng;
@@ -96,9 +94,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
     RadioGroup mRadioGroup;
     private RatingBar mRatingBar;
     private TextView mresturent, mhospitel;
+    BottomSheetDialog dialog;
 
-    public DrawerLayout drawerLayout;
-    public ActionBarDrawerToggle actionBarDrawerToggle;
 
 
 
@@ -108,63 +105,24 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
         setContentView(R.layout.activity_customer_map);
 
 
-
-
-        drawerLayout = findViewById(R.id.my_drawer_layout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
-
-        logoutbtn = findViewById(R.id.logoutbutton);
         mrequest = findViewById(R.id.request);
-        msettings = findViewById(R.id.settings);
+
+        dialog = new BottomSheetDialog(this);
 
         mRatingBar = (RatingBar) findViewById(R.id.ratingbar);
 
-        mresturent = (TextView) findViewById(R.id.returent);
-        mhospitel = (TextView) findViewById(R.id.hospitel);
+
 
         mcdriverinfo= findViewById(R.id.driverinfo);
         mDrivername= findViewById(R.id.driverName);
         mDriverPhone= findViewById(R.id.driverphonenumber);
         mDriverCar= findViewById(R.id.drivercar);
-        mHistory = findViewById(R.id.history);
+
         destinationLatLng = new LatLng(0.0,0.0);
        mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.userX);
 
 
-
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-
-        mresturent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StringBuilder stringBuilder  = new StringBuilder("http://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-                stringBuilder.append("location=" + latitudenew + longitudenew);
-            }
-        });
-        msettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(customerMapActivity.this, customerSettingsActivity.class);
-                startActivity(intent);
-                return;
-            }
-        });
-
-        mHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(customerMapActivity.this, HistoryActivity.class);
-                intent.putExtra("customerOrDriver" , "Customer") ;
-                startActivity(intent);
-                return;
-            }
-        });
 
 
         mrequest.setOnClickListener(new View.OnClickListener() {
@@ -209,17 +167,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
-        logoutbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(customerMapActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                return;
 
-            }
-        });
         checkPermission();
 
         if (isPermmsionGranter) {
@@ -251,6 +199,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
     }
 
+
+
 //            AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
 //            getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_fragment1);
 //
@@ -269,6 +219,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 if(!driverFound && requestBool){
+//                    driverFound= true;
+//                    driverFoundID = key;
                     DatabaseReference mCustomerdatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(key);
                     mCustomerdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -279,6 +231,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                                      return;
                                  }
                                  if(drivermap.get("service").equals(requestmservice)){
+
                                      driverFound = true;
                                      driverFoundID = datasnapshot.getKey();
                                      DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID);
@@ -292,6 +245,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                                      getDriverLocation();
                                      gerDriverInfo();
                                      gethasRiderEnded();
+                                     Toast.makeText(customerMapActivity.this, "looking for driver" , Toast.LENGTH_SHORT).show();
+
                                      mrequest.setText("Looking for your request");
                                  }
                              }
@@ -416,7 +371,7 @@ private  DatabaseReference drivehasendedRef;
         drivehasendedRef.removeEventListener(drivehasendedRefLisnter);
 
         if(driverFoundID != null){
-
+ //part 12 9.42 time
             DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID).child("CustomerRequest");
             driverRef.removeValue();
             driverFoundID = null;
@@ -448,11 +403,13 @@ private  DatabaseReference drivehasendedRef;
           driverLocationLister = driverLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                // in here
                  if(datasnapshot.exists() && requestBool){
                      List<Object> map = (List<Object>) datasnapshot.getValue();
                      double locationLat = 0;
                      double locationLng = 0;
                      mrequest.setText("Driver Found");
+                     Toast.makeText(customerMapActivity.this , "driver found" , Toast.LENGTH_LONG).show();
                      if(map.get(0) != null){
                          locationLat = Double.parseDouble(map.get(0).toString());
                      }
@@ -665,27 +622,11 @@ private  DatabaseReference drivehasendedRef;
     }
 
 
-    @Override
-    public void onBackPressed() {
 
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
 
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            if(item.getItemId() == R.id.settingsPage){
-                Toast.makeText(customerMapActivity.this, "aaaa", Toast.LENGTH_LONG).show();
-
-                googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-            }
-            return true;
-        }
 
      if(item.getItemId() == R.id.noneMap){
          googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
@@ -701,6 +642,28 @@ private  DatabaseReference drivehasendedRef;
         }
         if(item.getItemId() == R.id.mapTerrain){
             googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+        }
+        if(item.getItemId() == R.id.settingsPage){
+            Intent intent = new Intent(customerMapActivity.this, customerSettingsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
+
+        }
+        if(item.getItemId() == R.id.historyPagenew){
+
+            Intent intent = new Intent(customerMapActivity.this, HistoryActivity.class);
+            intent.putExtra("customerOrDriver" , "Customer") ;
+            startActivity(intent);
+
+        }
+        if(item.getItemId() == R.id.logoutPage){
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(customerMapActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+
 
         }
 

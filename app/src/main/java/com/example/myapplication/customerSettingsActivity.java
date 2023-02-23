@@ -14,7 +14,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,7 +33,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class customerSettingsActivity extends AppCompatActivity {
  private EditText mnameField, mPhoneField;
@@ -38,7 +40,7 @@ public class customerSettingsActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mCustomerDatabase;
-    private  String userid, mName , mPhone;
+    private  String userid, mName , mPhone , mProfile;
     private ImageView mProfileImage ;
     FirebaseStorage storage;
     Uri imageURI;
@@ -76,6 +78,7 @@ public class customerSettingsActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
+
                             Toast.makeText(getApplicationContext(), "uploaded apple", Toast.LENGTH_LONG).show();
 
                         }else {
@@ -130,21 +133,50 @@ public class customerSettingsActivity extends AppCompatActivity {
 
 
     private void uploadImage() {
-        Toast.makeText(getApplicationContext(), "run", Toast.LENGTH_LONG).show();
+
 
         if (imageURI != null){
-            StorageReference reference = storage.getReference().child("images/" + UUID.randomUUID().toString());
-            reference.putFile(imageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                   if(task.isSuccessful()){
-                       Toast.makeText(getApplicationContext(), "uploaded", Toast.LENGTH_LONG).show();
-                   }else {
-                       Toast.makeText(getApplicationContext(), "not uploaded", Toast.LENGTH_LONG).show();
+            StorageReference reference = storage.getReference().child("profile_image").child(userid);
 
-                   }
+            reference.putFile(imageURI).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), "Image failed" ,   Toast.LENGTH_LONG).show();
+
+                    finish();
+                    return;
                 }
             });
+            reference.putFile(imageURI).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+
+                    return reference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        //start from here
+                        Uri downloadUri = task.getResult();
+                        Map newImage = new HashMap();
+                        newImage.put("profileImageUrl" , downloadUri.toString());
+                        mCustomerDatabase.updateChildren(newImage);
+                        Toast.makeText(getApplicationContext(), "Image uploaded" ,   Toast.LENGTH_LONG).show();
+
+                        finish();
+                        return;
+                    } else {
+
+                    }
+                }
+            });
+        }else   {
+            finish();
         }
     }
 
@@ -163,6 +195,13 @@ public class customerSettingsActivity extends AppCompatActivity {
                  mPhone = map.get("phone").toString();
                  mPhoneField.setText(mPhone);
              }
+
+             if(map.get("profileImageUrl") != null){
+                 mProfile = map.get("profileImageUrl").toString();
+
+                 Glide.with(getApplicationContext()).load(mProfile).into(mProfileImage);
+             }
+
          }
             }
 

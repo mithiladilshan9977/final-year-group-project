@@ -1,56 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     tools:context=".DriverMapsActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/my_drawer_layout"
     android:layout_height="match_parent">
 
 
-    <FrameLayout
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
-        android:id="@+id/container"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
 
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintHorizontal_bias="0.0"
-        map:layout_constraintStart_toStartOf="parent"
+    <Button
+        android:id="@+id/logoutbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log out"
+        app:layout_constraintBottom_toBottomOf="@+id/container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        map:layout_constraintTop_toTopOf="parent"
-        map:layout_constraintVertical_bias="0.0"
-        tools:context=".DriverMapsActivity">
+    <Button
+        android:id="@+id/settings"
 
-        <Button
-            android:id="@+id/logoutbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Log out" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        app:layout_constraintBottom_toBottomOf="@+id/container" />
 
-        <Button
-            android:id="@+id/settings"
+    <Button
+        android:id="@+id/rideStatus"
 
-            android:layout_marginStart="100dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Settings" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="picked Cus"
 
-        <Button
-            android:id="@+id/rideStatus"
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="picked Cus"
-      android:layout_marginTop="50dp"
-            map:layout_constraintBottom_toTopOf="@+id/container"
-            map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintHorizontal_bias="0.055"
-            map:layout_constraintStart_toStartOf="parent"
-            map:layout_constraintTop_toTopOf="parent"
-            map:layout_constraintVertical_bias="0.0" />
-    </FrameLayout>
+        app:layout_constraintBottom_toTopOf="@+id/settings"
+
+
+        map:layout_constraintHorizontal_bias="0.055"
+        map:layout_constraintVertical_bias="0.0" />
+
+
 
 
     <LinearLayout
@@ -87,15 +83,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/customerphonenumber"
-                android:text="0776558745"
+                android:text="077 6558745"
                 android:paddingBottom="20sp"
                 />
 
         </LinearLayout>
 
     </LinearLayout>
+    <FrameLayout
 
+        android:id="@+id/container"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
 
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintHorizontal_bias="0.0"
+        map:layout_constraintStart_toStartOf="parent"
 
+        map:layout_constraintTop_toTopOf="parent"
+        map:layout_constraintVertical_bias="0.0"
+        tools:context=".DriverMapsActivity">
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/navigation_menu" />
+</androidx.drawerlayout.widget.DrawerLayout>

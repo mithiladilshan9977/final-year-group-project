@@ -64,13 +64,25 @@ public class customerLoginActivity extends AppCompatActivity {
         mregisterLinerLayout.setVisibility(View.VISIBLE);
         mloginLenerLayout.setVisibility(View.GONE);
 
-        if(mAuth.getCurrentUser() != null){
-            Intent intent = new Intent(customerLoginActivity.this, splashScreen.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
+//        if(mAuth.getCurrentUser() != null){
+//            Intent intent = new Intent(customerLoginActivity.this, splashScreen.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//        }
 
         LoadingDialog loadingDialog =new LoadingDialog(customerLoginActivity.this);
+
+        firebasequthlistener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user != null){
+                    Intent intent = new Intent(getApplicationContext() , customerMapActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            }
+        };
 
         mGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,12 +93,7 @@ public class customerLoginActivity extends AppCompatActivity {
                 return;
             }
         });
-        firebasequthlistener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-            }
-        };
 
         mRegistertion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,6 +241,8 @@ public class customerLoginActivity extends AppCompatActivity {
 
 
                             }else{
+                                Toast.makeText(customerLoginActivity.this ,  "Please verify the Email" , Toast.LENGTH_LONG).show();
+
                                 loadingDialog.stopAlert();
 
 

@@ -24,15 +24,25 @@
              android:layout_marginStart="15dp"/>
     </RelativeLayout>
 
-    <ImageView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:id="@+id/profileImage"
+    <androidx.cardview.widget.CardView
+
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:cardCornerRadius="100dp"
         android:layout_gravity="center"
         android:elevation="15dp"
+        android:layout_marginTop="15dp"
+        >
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/profileImage"
+
         android:src="@drawable/user_profile"
         android:layout_marginTop="10dp"
         />
+
+    </androidx.cardview.widget.CardView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,19 +70,23 @@
         />
     <Button
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="55dp"
+        android:background="@drawable/button_round"
+        android:layout_margin="5dp"
         android:text="Confirm"
         android:layout_marginTop="23dp"
         android:textColor="@color/white"
-        android:backgroundTint="@color/brown"
+
         android:textColorHint="@color/white"
         android:id="@+id/confirm"/>
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+
         android:text="Go back"
-        android:backgroundTint="@color/brown"
+        android:layout_height="55dp"
+        android:background="@drawable/button_round"
+        android:layout_margin="5dp"
         android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:id="@+id/back"/>
