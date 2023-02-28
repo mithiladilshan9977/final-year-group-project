@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 
+import com.bumptech.glide.Glide;
 import com.directions.route.AbstractRouting;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
@@ -84,7 +86,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     FusedLocationProviderClient fusedLocationProviderClient;
     private  LatLng destinationLatLon;
     Button logoutbtn, mSettings , mRrideStatus;
-    private  String customerID ="" , destination;
+    private  String customerID ="" , destination , driverid;
     private Boolean isLoggingOut = false    ;
     LinearLayout mcustomerinfo;
     private TextView mCustomername, mCustomerPhone;
@@ -93,6 +95,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     LatLng pickupLatLan;
     public DrawerLayout drawerLayout;
     public ActionBarDrawerToggle actionBarDrawerToggle;
+    private ImageView mCustomerProfile;
 
  androidx.appcompat.widget.Toolbar toolbar;
 
@@ -110,7 +113,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         mRrideStatus = findViewById(R.id.rideStatus);
         polylines = new ArrayList<>();
         logoutbtn = findViewById(R.id.logoutbutton);
-
+        mCustomerProfile = (ImageView) findViewById(R.id.customerProfile);
         drawerLayout = findViewById(R.id.my_drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
 
@@ -182,11 +185,13 @@ switch (status){
     }
 private Marker pickUpMaker;
     private void endRide() {
-              mRrideStatus.setText("pick up cus again");
-              erasePolyLines();
+        Toast.makeText(DriverMapsActivity.this, "End ride" , Toast.LENGTH_SHORT).show();
 
+        mRrideStatus.setText("pick up cus again");
+              erasePolyLines();
+//CustomerRequest at the end
             String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(userid).child("CustomerRequest");
+            DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(userid).child("CustomerRequest") ;
             driverRef.removeValue();
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("CustomerRequest");
@@ -210,6 +215,7 @@ private Marker pickUpMaker;
         mcustomerinfo.setVisibility(View.GONE);
         mCustomername.setText("");
         mCustomerPhone.setText("");
+        mCustomerProfile.setImageResource(R.mipmap.ic_launcher);
 
     }
 
@@ -245,9 +251,9 @@ private Marker pickUpMaker;
 
     private void getAssideCustomer() {
         //customerRiderID at the end
-        String driverid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+          driverid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference assigedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverid);
-        assigedCustomerRef.addValueEventListener(new ValueEventListener() {
+        assigedCustomerRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
 
@@ -267,7 +273,7 @@ private Marker pickUpMaker;
 
 
                     }else{
-                        Toast.makeText(DriverMapsActivity.this, "No dataaaa" , Toast.LENGTH_SHORT).show();
+
                        endRide();
 
                     }
@@ -285,7 +291,9 @@ private Marker pickUpMaker;
 
 
         private void getAssigedCustomerInfo(){
-        mcustomerinfo.setVisibility(View.VISIBLE);
+            Toast.makeText(DriverMapsActivity.this, "User info show" , Toast.LENGTH_SHORT).show();
+
+           mcustomerinfo.setVisibility(View.VISIBLE);
           DatabaseReference  mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerID);
 
             mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -300,6 +308,9 @@ private Marker pickUpMaker;
                         if(map.get("phone") != null){
 
                             mCustomerPhone.setText(map.get("phone").toString());
+                        }
+                        if (map.get("profileImageUrl") != null){
+                            Glide.with(getApplicationContext()).load(map.get("profileImageUrl").toString()).into(mCustomerProfile);
                         }
                     }
                 }
@@ -356,9 +367,10 @@ private Marker pickUpMaker;
         assigedCustomerPickupLocationRefLisner=  assigedCustomerPickupLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                if(datasnapshot.exists() && !customerID.equals("")){
-                    List<Object> map = (List<Object>) datasnapshot.getValue();
+                if(datasnapshot.exists()){
 
+
+                    List<Object> map = (List<Object>) datasnapshot.getValue();
                     double locationLat = 0;
                     double locationLng = 0;
 
@@ -371,7 +383,8 @@ private Marker pickUpMaker;
                     }
                     LatLng driverlatLng = new LatLng(locationLat, locationLng);
 
-                    pickUpMarker= googleMap.addMarker(new MarkerOptions().position(driverlatLng).title("pick up location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+
+                    pickUpMarker= googleMap.addMarker(new MarkerOptions().position(driverlatLng).title("pick up location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.authoritybutton)));
                     getRouterMaker(driverlatLng);
 
                 }
@@ -386,6 +399,9 @@ private Marker pickUpMaker;
     }
 
     private void getRouterMaker( LatLng pickupLatLan) {
+
+        Toast.makeText(DriverMapsActivity.this, "poly works" , Toast.LENGTH_SHORT).show();
+
         Routing routing = new Routing.Builder()
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
                 .withListener(this)
@@ -462,7 +478,7 @@ private Marker pickUpMaker;
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        googleMap = googleMap;
+        this.googleMap = googleMap;
 
 //        getCurrentLocationUpdate();
 //        LatLng latLng = new LatLng(0, 0);
@@ -541,7 +557,8 @@ private Marker pickUpMaker;
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
-                String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+            String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 DatabaseReference refWorking = FirebaseDatabase.getInstance().getReference("driverWorking");
 
                 DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
@@ -609,12 +626,16 @@ private Marker pickUpMaker;
         if(!isLoggingOut){
             disconnectDriver();
         }
-        String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
+
+         String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
 
 
-        GeoFire geoFireAvailable = new GeoFire(refAvailabel);
-        geoFireAvailable.removeLocation(userid);
+            GeoFire geoFireAvailable = new GeoFire(refAvailabel);
+            geoFireAvailable.removeLocation(userid);
+
+
+
 
         super.onStop();
 
@@ -646,6 +667,7 @@ if (polylines.size() > 0){
 }
         polylines = new ArrayList<>();
 for (int i =0 ; i <route.size(); i ++){
+
     int colorIndex = i % COLORS.length;
     PolylineOptions polylineOptions = new PolylineOptions();
     polylineOptions.color(getResources().getColor(COLORS[colorIndex]));

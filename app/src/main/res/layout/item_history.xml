@@ -1,26 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="10dp"
     >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/nameHolder"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameText"
+        android:text="Name :"
+        android:textSize="16dp"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Driverid"
-        android:textSize="25dp"
+        android:textStyle="bold"
         android:id="@+id/rideid"
+        android:textSize="16dp"
+        android:layout_marginLeft="15dp"
+        android:layout_toEndOf="@+id/nameText"
         />
+</LinearLayout>
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/phoneHolder"
+    android:layout_below="@+id/nameHolder"
+    >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time"
-        android:textSize="25dp"
-        android:id="@+id/time"
-        />
-
-
-
+        android:textSize="16dp"
+        android:text="Phone :"
+        android:id="@+id/textPhone"
+        android:layout_marginTop="7dp"
+        android:layout_below="@+id/nameText"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0775006985"
+            android:textStyle="bold"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/time"
+            android:layout_marginTop="7dp"
+             android:layout_below="@+id/rideid"
+            android:layout_toEndOf="@+id/textPhone"
+            />
 </LinearLayout>
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:id="@+id/discriptionHolder"
+     android:layout_below="@+id/phoneHolder"
+     >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:layout_marginTop="7dp"
+        android:text="Discription :"
+        android:id="@+id/textDiscription"
+      />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:text="I am from malebe"
+        android:textStyle="bold"
+        android:layout_toEndOf="@id/textDiscription"
+        android:id="@+id/DriverDiscription"
+        android:layout_below="@+id/time"/>
+
+
+ </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileHolder"
+        android:layout_below="@+id/discriptionHolder"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:layout_marginTop="7dp"
+            android:text="Profile :"
+
+            />
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/user_profile"
+
+            android:id="@+id/driverProfileImage"
+            android:layout_marginLeft="15dp"
+            />
+
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>

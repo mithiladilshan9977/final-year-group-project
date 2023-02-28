@@ -62,11 +62,11 @@ public class DriverLogInActivity extends AppCompatActivity {
         mloginimage.setVisibility(View.VISIBLE);
         msignupimage.setVisibility(View.GONE);
 
-//        if (mAuth.getCurrentUser() != null){
-//            Intent intent = new Intent(DriverLogInActivity.this, officersplashactivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(intent);
-//        }
+        if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified()){
+            Intent intent = new Intent(DriverLogInActivity.this, DriverMapsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
 
         LoadingDialog loadingDialog =new LoadingDialog(DriverLogInActivity.this);
         firebasequthlistener = new FirebaseAuth.AuthStateListener() {
@@ -154,7 +154,8 @@ public class DriverLogInActivity extends AppCompatActivity {
                             Toast.makeText(DriverLogInActivity.this , "Check your internet connect" , Toast.LENGTH_LONG).show();
                         }else{
                             String user_id = mAuth.getCurrentUser().getUid();
-                            DatabaseReference currnt_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(user_id).child("name");
+                            DatabaseReference currnt_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(user_id).child("email");
+
                             DatabaseReference curretUserNIC = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(user_id).child("UserNIC").child(nicNumber);
                             final FirebaseUser user = mAuth.getCurrentUser();
                             user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -163,6 +164,10 @@ public class DriverLogInActivity extends AppCompatActivity {
                                     if(task.isSuccessful()){
                                         loadingDialog.stopAlert();
                                         Toast.makeText(DriverLogInActivity.this , "Email has sent" , Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(DriverLogInActivity.this , MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+
 
 
                                     }else{
@@ -172,7 +177,7 @@ public class DriverLogInActivity extends AppCompatActivity {
                                 }
                             });
 
-                            currnt_user_db.setValue(email);
+                            currnt_user_db.setValue(true);
                             curretUserNIC.setValue(true);
                         }
                     }

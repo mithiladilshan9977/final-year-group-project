@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="brown">#AD070D</color>
     <color name="low_color_brown">#AD070D</color>
+    <color name="very_low_color_brown">#EBC6C8</color>
 </resources>
 

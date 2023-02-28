@@ -8,88 +8,96 @@
     android:id="@+id/my_drawer_layout"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:elevation="100dp"
+        >
+        <Button
+            android:id="@+id/logoutbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log out"
+            />
 
+        <Button
+            android:id="@+id/settings"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            app:layout_constraintBottom_toBottomOf="@+id/container" />
+
+        <Button
+            android:id="@+id/rideStatus"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="picked Cus"
+            app:layout_constraintBottom_toTopOf="@+id/settings"
+            map:layout_constraintHorizontal_bias="0.055"
+            map:layout_constraintVertical_bias="0.0" />
+    </LinearLayout>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-
-
-    <Button
-        android:id="@+id/logoutbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log out"
-        app:layout_constraintBottom_toBottomOf="@+id/container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/settings"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Settings"
-        app:layout_constraintBottom_toBottomOf="@+id/container" />
-
-    <Button
-        android:id="@+id/rideStatus"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="picked Cus"
-
-
-        app:layout_constraintBottom_toTopOf="@+id/settings"
-
-
-        map:layout_constraintHorizontal_bias="0.055"
-        map:layout_constraintVertical_bias="0.0" />
-
-
-
-
     <LinearLayout
         android:id="@+id/customerinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         android:gravity="bottom"
-        android:orientation="horizontal"
+   android:visibility="gone"
+  android:background="@drawable/show_driver_customer_info"
         map:layout_constraintBottom_toBottomOf="parent"
+         android:elevation="100dp"
         map:layout_constraintEnd_toEndOf="parent"
-      android:visibility="gone"
         map:layout_constraintStart_toStartOf="parent">
 
         <ImageView
+            android:id="@+id/customerProfile"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:src="@mipmap/carnew_ic_launcher"
-            />
+            android:src="@drawable/customer_driver_prfile" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="15sp"
-            >
+            android:layout_marginBottom="25dp"
+            android:paddingLeft="15sp">
+
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/customerName"
-                android:text="dilshan"
-                android:paddingBottom="20sp"
-                />
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/customerphonenumber"
-                android:text="077 6558745"
                 android:paddingBottom="20sp"
-                />
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="dilshan" />
+
+
+
+            <TextView
+                android:id="@+id/customerphonenumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20sp"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:text="077 6558745" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+
+
+
+
     <FrameLayout
 
         android:id="@+id/container"

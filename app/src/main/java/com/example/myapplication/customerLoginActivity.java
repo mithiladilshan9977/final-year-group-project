@@ -34,6 +34,7 @@ public class customerLoginActivity extends AppCompatActivity {
 
     private ImageView mloginimage , msignupimage;
     LinearLayout mregisterLinerLayout, mloginLenerLayout;
+    private boolean checkEmail = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,11 +73,12 @@ public class customerLoginActivity extends AppCompatActivity {
 
         LoadingDialog loadingDialog =new LoadingDialog(customerLoginActivity.this);
 
+
         firebasequthlistener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if(user != null){
+                if(user != null &&  mAuth.getCurrentUser().isEmailVerified()){
                     Intent intent = new Intent(getApplicationContext() , customerMapActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -167,6 +169,7 @@ public class customerLoginActivity extends AppCompatActivity {
 
                             String user_id = mAuth.getCurrentUser().getUid();
                             DatabaseReference currnt_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(user_id);
+
                             DatabaseReference curretUserNIC = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(user_id).child("UserNIC").child(nicNumber);
 
                             final FirebaseUser user = mAuth.getCurrentUser();
@@ -174,8 +177,12 @@ public class customerLoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                        if(task.isSuccessful()){
-                                           loadingDialog.stopAlert();
+
                                            Toast.makeText(customerLoginActivity.this , "Email has sent" , Toast.LENGTH_LONG).show();
+
+                                           Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                           startActivity(intent);
 
 
                                        }else{
@@ -227,12 +234,14 @@ public class customerLoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(!task.isSuccessful()){
+
                             loadingDialog.stopAlert();
                          Toast.makeText(customerLoginActivity.this , task.getException().getMessage() , Toast.LENGTH_LONG).show();
 
                         }
                         else{
                             if(newauth.getCurrentUser().isEmailVerified()){
+
                                 loadingDialog.stopAlert();
                                 Intent intent = new Intent(getApplicationContext() , customerMapActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

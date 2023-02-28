@@ -40,20 +40,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="219dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/settings"
 
-      android:visibility="visible"
-        map:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible"
+        android:background="@drawable/show_driver_customer_info"
+        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
         map:layout_constraintEnd_toEndOf="parent"
+        android:elevation="100dp"
         map:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:src="@mipmap/carnew_ic_launcher" />
+            android:id="@+id/driverProfile"
+            android:src="@drawable/customer_driver_prfile" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,15 +66,31 @@
                 android:id="@+id/driverName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:paddingBottom="20sp"
                 android:text="dilshan" />
 
+            <TextView
+                android:id="@+id/driverphonenumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20sp"
+                android:text="0776558745"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/drivercar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="20sp"
+                android:textColor="@color/black"
+                android:textSize="20dp"
                 android:text="Bukati" />
 
 
@@ -138,15 +155,7 @@
 
 
 
-    <TextView
-        android:id="@+id/driverphonenumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="20sp"
-        android:text="0776558745"
-        app:layout_constraintBottom_toBottomOf="parent"
 
-        app:layout_constraintStart_toStartOf="parent" />
 
 
     <Button

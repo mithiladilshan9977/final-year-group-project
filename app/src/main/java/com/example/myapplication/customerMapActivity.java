@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -27,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -86,7 +88,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
     Boolean requestBool = false;
 
     private Marker pickUpMaker;
-    String destination , requestmservice;
+    String destination , requestmservice , userid , DriverHistoryPhone , DriverHistoryName , DriverDiscription;
 
     LinearLayout mcdriverinfo;
     private TextView mDrivername, mDriverPhone , mDriverCar;
@@ -95,8 +97,9 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
     private RatingBar mRatingBar;
     private TextView mresturent, mhospitel;
     BottomSheetDialog dialog;
+    private ImageView mdriverProfile;
 
-
+ private Uri driverPicUri;
 
 
     @Override
@@ -117,7 +120,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
         mDrivername= findViewById(R.id.driverName);
         mDriverPhone= findViewById(R.id.driverphonenumber);
         mDriverCar= findViewById(R.id.drivercar);
-
+        mdriverProfile = (ImageView) findViewById(R.id.driverProfile);
         destinationLatLng = new LatLng(0.0,0.0);
        mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.userX);
@@ -142,7 +145,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                     requestmservice = radiobutton.getText().toString();
 
                     requestBool= true;
-                    String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                      userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("CustomerRequest");
 
                     GeoFire geoFire = new GeoFire(ref);
@@ -151,13 +154,14 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                     pickuplocation =  new LatLng(latitudenew ,longitudenew );
 
                     MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.title("I need help").icon(BitmapDescriptorFactory.fromResource(R.mipmap.carnew_ic_launcher));
+                    markerOptions.title("I need help").icon(BitmapDescriptorFactory.fromResource(R.mipmap.customerlocation));
                     markerOptions.position(pickuplocation);
                     pickUpMaker = googleMap.addMarker(markerOptions);
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(pickuplocation, 15);
                     googleMap.animateCamera(cameraUpdate);
 
                     mrequest.setText("Calling...");
+
                     getClosestDriver();
                 }
 
@@ -219,36 +223,41 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 if(!driverFound && requestBool){
-//                    driverFound= true;
-//                    driverFoundID = key;
+
                     DatabaseReference mCustomerdatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(key);
-                    mCustomerdatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    mCustomerdatabase.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                            //later implemented
                              if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
                                  Map<String, Object> drivermap = (Map<String, Object>) datasnapshot.getValue();
                                  if(driverFound){
                                      return;
                                  }
-                                 if(drivermap.get("service").equals(requestmservice)){
+                                 if (drivermap.get("service") != null){
+                                     if(drivermap.get("service").equals(requestmservice)){
 
-                                     driverFound = true;
-                                     driverFoundID = datasnapshot.getKey();
-                                     DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID);
-                                     String customerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                     HashMap map = new HashMap();
-                                     map.put("customerRiderID", customerID);
-                                     map.put("destinationLat", destinationLatLng.latitude);
-                                     map.put("destinationLon", destinationLatLng.longitude);
-                                     driverRef.updateChildren(map);
+                                         driverFound = true;
+                                         driverFoundID = datasnapshot.getKey();
+                                         DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID);
+                                         String customerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                         HashMap map = new HashMap();
+                                         map.put("customerRiderID", customerID);
+                                         map.put("destinationLat", destinationLatLng.latitude);
+                                         map.put("destinationLon", destinationLatLng.longitude);
+                                         driverRef.updateChildren(map);
 
-                                     getDriverLocation();
-                                     gerDriverInfo();
-                                     gethasRiderEnded();
-                                     Toast.makeText(customerMapActivity.this, "looking for driver" , Toast.LENGTH_SHORT).show();
+                                         getDriverLocation();
+                                         gerDriverInfo();
+                                         gethasRiderEnded();
 
-                                     mrequest.setText("Looking for your request");
+                                         mrequest.setText("Looking for your request");
+                                     }
+                                 }else {
+                                     Toast.makeText(customerMapActivity.this, "No set information yet", Toast.LENGTH_LONG).show();
+
                                  }
+
                              }
                         }
 
@@ -293,10 +302,11 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
 
     private void gerDriverInfo(){
+        putIntoHistoryPage();
         mcdriverinfo.setVisibility(View.VISIBLE);
         DatabaseReference  mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID);
 
-        mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        mCustomerDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                 if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
@@ -312,6 +322,9 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                     if(map.get("car") != null){
 
                         mDriverCar.setText(map.get("car").toString());
+                    }
+                    if (map.get("profileImageUrl") != null){
+                        Glide.with(getApplicationContext()).load(map.get("profileImageUrl").toString()).into(mdriverProfile);
                     }
                     int mRatingSum = 0;
                     int ratingTotal = 0;
@@ -333,6 +346,49 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
             }
         });
+    }
+
+    public  void  putIntoHistoryPage(){
+        DatabaseReference  mCustomerHistoryDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID);
+        mCustomerHistoryDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                 if (datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
+
+                     Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
+                     if(map.get("name") != null){
+
+                           DriverHistoryName = map.get("name").toString();
+                     }
+                     if (map.get("phone") != null){
+                           DriverHistoryPhone = map.get("phone").toString();
+                     }
+                     if (map.get("car") != null){
+                         DriverDiscription = map.get("car").toString();
+                     }
+
+
+                     InsertIntoCustomerHistory();
+                 }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+    public  void  InsertIntoCustomerHistory(){
+        DatabaseReference insertDriverInfoIntoCustomer = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(userid).child("history").child(driverFoundID);
+        HashMap map = new HashMap();
+
+        map.put("driverName", DriverHistoryName );
+        map.put("driverPhone", DriverHistoryPhone );
+        map.put("driverDiscription", DriverDiscription );
+//        map.put("driverProfile",  driverPicUri );
+        insertDriverInfoIntoCustomer.setValue(map);
     }
 private  DatabaseReference drivehasendedRef;
     private  ValueEventListener drivehasendedRefLisnter;
@@ -392,6 +448,7 @@ private  DatabaseReference drivehasendedRef;
         mDrivername.setText("");
         mDriverPhone.setText("");
         mDriverCar.setText("");
+        mdriverProfile.setImageResource(R.mipmap.ic_launcher);
     }
 
 
@@ -405,11 +462,12 @@ private  DatabaseReference drivehasendedRef;
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                 // in here
                  if(datasnapshot.exists() && requestBool){
+                     Toast.makeText(getApplicationContext(), "getdriverinfo" , Toast.LENGTH_LONG).show();
                      List<Object> map = (List<Object>) datasnapshot.getValue();
                      double locationLat = 0;
                      double locationLng = 0;
                      mrequest.setText("Driver Found");
-                     Toast.makeText(customerMapActivity.this , "driver found" , Toast.LENGTH_LONG).show();
+
                      if(map.get(0) != null){
                          locationLat = Double.parseDouble(map.get(0).toString());
                      }
@@ -438,7 +496,7 @@ private  DatabaseReference drivehasendedRef;
 
                      }
 
-                     mDriverMaker = googleMap.addMarker(new MarkerOptions().position(driverlatLng).title("Your host").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)));
+                     mDriverMaker = googleMap.addMarker(new MarkerOptions().position(driverlatLng).title("Your host").icon(BitmapDescriptorFactory.fromResource(R.mipmap.authoritybutton)));
 
 
 
@@ -583,10 +641,14 @@ private  DatabaseReference drivehasendedRef;
                   latitudenew = locationResult.getLastLocation().getLatitude();
                   longitudenew = locationResult.getLastLocation().getLongitude();
 
-                String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Location");
-                GeoFire geoFire = new GeoFire(ref);
-                geoFire.setLocation(userid , new GeoLocation(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude() ));
+        // put the if condition here to check userid
+                if (userid != null){
+                    String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Location");
+                    GeoFire geoFire = new GeoFire(ref);
+                    geoFire.setLocation(userid , new GeoLocation(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude() ));
+
+                }
 
 //                Toast.makeText(customerMapActivity.this, "location new" + latitudenew + " -- " + longitudenew  , Toast.LENGTH_LONG).show();
 
@@ -655,7 +717,9 @@ private  DatabaseReference drivehasendedRef;
 
             Intent intent = new Intent(customerMapActivity.this, HistoryActivity.class);
             intent.putExtra("customerOrDriver" , "Customer") ;
+
             startActivity(intent);
+
 
         }
         if(item.getItemId() == R.id.logoutPage){

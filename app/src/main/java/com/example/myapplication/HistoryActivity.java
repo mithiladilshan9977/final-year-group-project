@@ -1,10 +1,16 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,7 +29,10 @@ public class HistoryActivity extends AppCompatActivity {
    private RecyclerView mHistoryRecycelView;
    private RecyclerView.Adapter mHistoryAdapter;
    private RecyclerView.LayoutManager mHistoryLayoutManager;
-   private String customerOrDriverHere , userid;
+   private ImageView mgoBackArrow , mhistoryimage;
+   private String customerOrDriverHere , userid,historyDriverPhone,historyDriverName,historyDriverDisprition;
+   private TextView mnoHistoryText;
+   private NestedScrollView mnestedScrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,31 +41,63 @@ public class HistoryActivity extends AppCompatActivity {
         mHistoryRecycelView.setNestedScrollingEnabled(false);
         mHistoryRecycelView.setHasFixedSize(true);
 
+        mgoBackArrow = (ImageView) findViewById(R.id.goBackArrow);
+        mhistoryimage = (ImageView) findViewById(R.id.historyimage);
+        mnoHistoryText = (TextView) findViewById(R.id.noHistoryText);
+        mnestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
+
         mHistoryLayoutManager = new LinearLayoutManager(HistoryActivity.this);
         mHistoryRecycelView.setLayoutManager(mHistoryLayoutManager);
         mHistoryAdapter =new HistoryAdapter(getdatasethistory() , HistoryActivity.this);
         mHistoryRecycelView.setAdapter(mHistoryAdapter);
 
         customerOrDriverHere = getIntent().getExtras().getString("customerOrDriver");
+
         userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getUserHistoryIds();
 
-
-
+         mgoBackArrow.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Intent intent = new Intent(getApplicationContext(), customerMapActivity.class);
+                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                 startActivity(intent);
+             }
+         });
 
 
 
     }
 
     private void getUserHistoryIds() {
-        DatabaseReference userhistorydatabase = FirebaseDatabase.getInstance().getReference("Users").child(customerOrDriverHere).child(userid).child("history");
+
+        DatabaseReference userhistorydatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(customerOrDriverHere).child(userid).child("history");
         userhistorydatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                          if (datasnapshot.exists()){
-                             for (DataSnapshot history: datasnapshot.getChildren() ){
-                                 FetchRiferInformation(history.getKey());
+                             for (DataSnapshot driverinfor: datasnapshot.getChildren() ){
+                                     historyDriverName = driverinfor.child("driverName").getValue().toString();
+                                     historyDriverPhone = driverinfor.child("driverPhone").getValue().toString();
+                                     historyDriverDisprition = driverinfor.child("driverDiscription").getValue().toString();
+
+//                                 FetchRiferInformation(driverinfor.getKey());
+                                 mnoHistoryText.setVisibility(View.GONE);
+                                 mhistoryimage.setVisibility(View.GONE);
+                                 mnestedScrollView.setVisibility(View.VISIBLE);
+
+                                 Toast.makeText(getApplicationContext() ,    "has user data", Toast.LENGTH_SHORT).show();
+
                              }
+                             HistoryObject obj  =new HistoryObject(historyDriverName, historyDriverPhone,historyDriverDisprition );
+                             resultHistory.add(obj);
+                             mHistoryAdapter.notifyDataSetChanged();
+                         }else{
+                             mnoHistoryText.setVisibility(View.VISIBLE);
+                             mhistoryimage.setVisibility(View.VISIBLE);
+                             mnestedScrollView.setVisibility(View.GONE);
+                             Toast.makeText(getApplicationContext() ,    "No user data", Toast.LENGTH_SHORT).show();
+
                          }
             }
 
@@ -69,7 +110,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void FetchRiferInformation(String rideKey) {
-        DatabaseReference historydatabase = FirebaseDatabase.getInstance().getReference("history").child(rideKey);
+        DatabaseReference historydatabase = FirebaseDatabase.getInstance().getReference().child("history").child(rideKey);
         historydatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
@@ -77,13 +118,20 @@ public class HistoryActivity extends AppCompatActivity {
                    String rideId = datasnapshot.getKey();
                    Long timeStamp = 0L;
                    for (DataSnapshot child: datasnapshot.getChildren()){
+                        if (child.equals("driverName")){
+//                              historyDriverName = child.getValue().toString();
+                        }
+                       if (child.equals("driverPhone")){
+//                             historyDriverPhone = child.getValue().toString();
+                       }
+
+
                        if (child.equals("timeStamp")){
                            timeStamp = Long.valueOf(child.getValue().toString());
                        }
                    }
-                    HistoryObject obj  =new HistoryObject(rideId, getDate(timeStamp));
-                    resultHistory.add(obj);
-                    mHistoryAdapter.notifyDataSetChanged();
+                   //inside here getDate(timeStamp)
+
 
                 }
             }

@@ -11,13 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 public class HistoryViewHolders  extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView rideid;
-    public TextView time;
+    public TextView time, discription;
     public HistoryViewHolders(@NonNull View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
 
         rideid = (TextView) itemView.findViewById(R.id.rideid);
         time = (TextView) itemView.findViewById(R.id.time);
+        discription = (TextView) itemView.findViewById(R.id.textDiscription);
     }
 
     @Override
