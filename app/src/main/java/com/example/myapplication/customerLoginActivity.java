@@ -23,6 +23,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import es.dmoral.toasty.Toasty;
+
 public class customerLoginActivity extends AppCompatActivity {
 
     private Button mLogin , mRegistertion , mGoBack;
@@ -157,14 +159,20 @@ public class customerLoginActivity extends AppCompatActivity {
                         if(!task.isSuccessful()){
                                if(task.getException() instanceof FirebaseAuthUserCollisionException){
                                    loadingDialog.stopAlert();
-                                   Toast.makeText(customerLoginActivity.this , "You are already registered" , Toast.LENGTH_LONG).show();
+                                   Toasty.error(getApplicationContext(),"You are already registered", Toast.LENGTH_LONG, true).show();
+
+
                                    return;
 
                                }else{
-                                   Toast.makeText(customerLoginActivity.this , task.getException().getMessage() , Toast.LENGTH_LONG).show();
+                                   Toasty.error(getApplicationContext(),task.getException().getMessage(), Toast.LENGTH_LONG, true).show();
+
+
 
                                }
-                            Toast.makeText(customerLoginActivity.this , "Check your internet connect" , Toast.LENGTH_LONG).show();
+                            Toasty.error(getApplicationContext(),"Check your internet connect", Toast.LENGTH_LONG, true).show();
+
+
                         }else{
 
                             String user_id = mAuth.getCurrentUser().getUid();
@@ -177,16 +185,16 @@ public class customerLoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                        if(task.isSuccessful()){
-
-                                           Toast.makeText(customerLoginActivity.this , "Email has sent" , Toast.LENGTH_LONG).show();
-
+                                           Toasty.success(getApplicationContext(),"Email has sent", Toast.LENGTH_LONG, true).show();
                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                            startActivity(intent);
 
 
                                        }else{
-                                           Toast.makeText(customerLoginActivity.this , "Email Not sent" , Toast.LENGTH_LONG).show();
+                                           Toasty.error(getApplicationContext(),"Email not sent", Toast.LENGTH_LONG, true).show();
+
+
 
                                        }
                                 }
@@ -236,7 +244,9 @@ public class customerLoginActivity extends AppCompatActivity {
                         if(!task.isSuccessful()){
 
                             loadingDialog.stopAlert();
-                         Toast.makeText(customerLoginActivity.this , task.getException().getMessage() , Toast.LENGTH_LONG).show();
+                            Toasty.error(getApplicationContext(),task.getException().getMessage(), Toast.LENGTH_LONG, true).show();
+
+
 
                         }
                         else{
@@ -246,11 +256,16 @@ public class customerLoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext() , customerMapActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
-                                Toast.makeText(customerLoginActivity.this ,  "Verified" , Toast.LENGTH_LONG).show();
+
+                                Toasty.success(getApplicationContext(),"Verified", Toast.LENGTH_LONG, true).show();
+
+
 
 
                             }else{
-                                Toast.makeText(customerLoginActivity.this ,  "Please verify the Email" , Toast.LENGTH_LONG).show();
+                                Toasty.info(getApplicationContext(),"Please verify the Email", Toast.LENGTH_LONG, true).show();
+
+
 
                                 loadingDialog.stopAlert();
 

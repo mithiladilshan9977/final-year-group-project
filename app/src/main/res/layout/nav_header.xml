@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="bottom"
+   android:id="@+id/header_linearlayout"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+   android:background="@color/very_low_color_brown"
+    android:layout_width="match_parent"
+    android:layout_height="250dp">
+
+
+<ImageView
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:src="@drawable/user_profile"
+    android:elevation="50dp"
+    android:layout_gravity="center"
+    />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+   android:text="tree"
+        android:textColor="@color/black"
+        android:id="@+id/officerNameXML"
+        android:layout_gravity="center"
+        android:textSize="20sp"
+ android:layout_marginBottom="10dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="tree"
+        android:textColor="@color/black"
+        android:id="@+id/setnametext"
+        android:layout_gravity="center"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp"
+        />
+
+</LinearLayout>

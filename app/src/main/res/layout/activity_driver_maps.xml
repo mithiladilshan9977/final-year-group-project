@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:context=".DriverMapsActivity"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
+    android:fitsSystemWindows="true"
+
     xmlns:map="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/my_drawer_layout"
-    android:layout_height="match_parent">
+    tools:context=".DriverMapsActivity">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:elevation="100dp"
-        >
+        android:elevation="100dp"
+      android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <Button
             android:id="@+id/logoutbutton"
             android:layout_width="wrap_content"
+            android:layout_marginTop="180dp"
             android:layout_height="wrap_content"
-            android:text="Log out"
-            />
+            android:text="Log out" />
 
         <Button
             android:id="@+id/settings"
+            android:layout_marginTop="180dp"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,98 +38,125 @@
 
         <Button
             android:id="@+id/rideStatus"
+            android:layout_marginTop="150dp"
 
+            map:layout_constraintHorizontal_bias="0.055"
+            map:layout_constraintVertical_bias="0.0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="picked Cus"
-            app:layout_constraintBottom_toTopOf="@+id/settings"
-            map:layout_constraintHorizontal_bias="0.055"
-            map:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintBottom_toTopOf="@+id/settings" />
     </LinearLayout>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-    <LinearLayout
-        android:id="@+id/customerinfo"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:gravity="bottom"
-   android:visibility="gone"
-  android:background="@drawable/show_driver_customer_info"
-        map:layout_constraintBottom_toBottomOf="parent"
-         android:elevation="100dp"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/customerProfile"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:src="@drawable/customer_driver_prfile" />
-
+        android:layout_height="match_parent"
+        >
         <LinearLayout
+            android:id="@+id/customerinfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="25dp"
-            android:paddingLeft="15sp">
+            android:padding="5dp"
+            android:gravity="bottom"
+            android:visibility="gone"
+            android:background="@drawable/show_driver_customer_info"
+            map:layout_constraintBottom_toBottomOf="parent"
+            android:elevation="100dp"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/customerName"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/customerProfile"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:src="@drawable/customer_driver_prfile" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20sp"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:text="dilshan" />
+                android:orientation="vertical"
+                android:layout_marginBottom="25dp"
+                android:paddingLeft="15sp">
+
+                <TextView
+                    android:id="@+id/customerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="20sp"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:text="dilshan" />
 
 
 
-            <TextView
-                android:id="@+id/customerphonenumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="20sp"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:text="077 6558745" />
+                <TextView
+                    android:id="@+id/customerphonenumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="20sp"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="077 6558745" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+
+
+
+
+        <FrameLayout
+
+            android:id="@+id/container"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+
+            map:layout_constraintBottom_toBottomOf="parent"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:layout_constraintHorizontal_bias="0.0"
+            map:layout_constraintStart_toStartOf="parent"
+
+            map:layout_constraintTop_toTopOf="parent"
+            map:layout_constraintVertical_bias="0.0"
+            tools:context=".DriverMapsActivityold">
+
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="250dp"
+            android:id="@+id/toolbar"
+
+
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+
+            />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/fragment_container"
+            />
     </LinearLayout>
 
-
-
-
-
-    <FrameLayout
-
-        android:id="@+id/container"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-
-        map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintHorizontal_bias="0.0"
-        map:layout_constraintStart_toStartOf="parent"
-
-        map:layout_constraintTop_toTopOf="parent"
-        map:layout_constraintVertical_bias="0.0"
-        tools:context=".DriverMapsActivity">
-
-    </FrameLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-
     <com.google.android.material.navigation.NavigationView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+     android:background="@color/very_low_color_brown"
         android:layout_gravity="start"
-        app:menu="@menu/navigation_menu" />
+        android:id="@+id/nav_view"
+        app:menu="@menu/drwer_menu"
+        app:headerLayout="@layout/nav_header"
+        />
 </androidx.drawerlayout.widget.DrawerLayout>

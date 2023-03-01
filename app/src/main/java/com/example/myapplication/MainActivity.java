@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import es.dmoral.toasty.Toasty;
+
 public class MainActivity extends AppCompatActivity {
 Button mapbtn    , submitbtn;
 ImageButton mcustomer,mDriver ;
@@ -66,7 +68,8 @@ private FirebaseAuth mAuth;
            mcustomerText.setVisibility(View.GONE);
            moficcerText.setVisibility(View.GONE);
            mopenEmail.setVisibility(View.GONE);
-           Toast.makeText(getApplicationContext(), "No internet connection !" , Toast.LENGTH_LONG).show();
+           Toasty.error(getApplicationContext(), "No internet connection !", Toast.LENGTH_LONG, true).show();
+
        }else{
            noInterConnection.setVisibility(View.GONE);
            mcustomer.setVisibility(View.VISIBLE);

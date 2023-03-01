@@ -75,19 +75,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 public class customerMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     boolean isPermmsionGranter;
     GoogleMap googleMap;
     LocationRequest locationRequest;
     FusedLocationProviderClient fusedLocationProviderClient;
-    Button logoutbtn , mrequest  , show;
+    Button logoutbtn , mrequest  , show , mbottmSheetButton;
     Location mLastLocation;
     Double latitudenew , longitudenew;
     LatLng pickuplocation , destinationLatLng;
     Boolean requestBool = false;
 
-    private Marker pickUpMaker;
+    private Marker pickUpMaker , mDriverMaker;
     String destination , requestmservice , userid , DriverHistoryPhone , DriverHistoryName , DriverDiscription;
 
     LinearLayout mcdriverinfo;
@@ -102,19 +104,26 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
  private Uri driverPicUri;
 
 
+    private   DatabaseReference  driverLocationRef;
+    private ValueEventListener driverLocationLister;
+    private int radius = 2;
+    private boolean driverFound = false;
+    private  String driverFoundID ;
+    GeoQuery geoQuery;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_map);
 
 
-        mrequest = findViewById(R.id.request);
+
 
         dialog = new BottomSheetDialog(this);
 
         mRatingBar = (RatingBar) findViewById(R.id.ratingbar);
 
-
+          mbottmSheetButton = (Button) findViewById(R.id.bottmSheetButton);
 
         mcdriverinfo= findViewById(R.id.driverinfo);
         mDrivername= findViewById(R.id.driverName);
@@ -125,13 +134,17 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
        mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.userX);
 
-
-
-
+        createDialog();
+       mbottmSheetButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               dialog.show();
+           }
+       });
         mrequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                      dialog.dismiss();
                 if(requestBool){
                    endRide();
 
@@ -184,7 +197,9 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                 }
 
             } else {
-                Toast.makeText(customerMapActivity.this, "Googl pleay servces are not availabel", Toast.LENGTH_LONG).show();
+                Toasty.error(getApplicationContext(),"Google play services not available", Toast.LENGTH_LONG, true).show();
+
+
 
             }
         }
@@ -203,6 +218,13 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
     }
 
+    private void createDialog() {
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_dialog_layout, null , false);
+        mrequest = view.findViewById(R.id.request);
+
+        dialog.setContentView(view);
+
+    }
 
 
 //            AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -210,11 +232,9 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 //
 //                autocompleteFragment.setTypeFilter(TypeFilter.CITIES);
 
-    private int radius = 2;
-    private boolean driverFound = false;
-    private  String driverFoundID ;
-    GeoQuery geoQuery;
+
     private void getClosestDriver() {
+    // endRide();
         DatabaseReference driverlocation = FirebaseDatabase.getInstance().getReference().child("driverAvailabel");
         GeoFire geoFire = new GeoFire(driverlocation);
         geoQuery = geoFire.queryAtLocation(new GeoLocation(pickuplocation.latitude, pickuplocation.longitude), radius );
@@ -223,7 +243,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 if(!driverFound && requestBool){
-
+//                          driverFound = true;
+//                          driverFoundID = key;
                     DatabaseReference mCustomerdatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(key);
                     mCustomerdatabase.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -232,6 +253,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                              if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
                                  Map<String, Object> drivermap = (Map<String, Object>) datasnapshot.getValue();
                                  if(driverFound){
+
                                      return;
                                  }
                                  if (drivermap.get("service") != null){
@@ -254,7 +276,9 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                                          mrequest.setText("Looking for your request");
                                      }
                                  }else {
-                                     Toast.makeText(customerMapActivity.this, "No set information yet", Toast.LENGTH_LONG).show();
+                                     Toasty.error(getApplicationContext(),"No information yet", Toast.LENGTH_LONG, true).show();
+
+
 
                                  }
 
@@ -407,7 +431,9 @@ private  DatabaseReference drivehasendedRef;
                     }
                 }
                 else{
-                    Toast.makeText(customerMapActivity.this, "No user found" , Toast.LENGTH_SHORT).show();
+                    Toasty.warning(getApplicationContext(),"No user found", Toast.LENGTH_LONG, true).show();
+
+
                 }
 
 
@@ -420,41 +446,10 @@ private  DatabaseReference drivehasendedRef;
         });
     }
 
-    private void endRide() {
-        requestBool = false;
-        geoQuery.removeAllListeners();
-        driverLocationRef.removeEventListener(driverLocationLister);
-        drivehasendedRef.removeEventListener(drivehasendedRefLisnter);
-
-        if(driverFoundID != null){
- //part 12 9.42 time
-            DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID).child("CustomerRequest");
-            driverRef.removeValue();
-            driverFoundID = null;
-
-        }
-        driverFound = false ;
-        radius = 1;
-        String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("CustomerRequest");
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.removeLocation(userid);
-
-        if(pickUpMaker != null){
-            pickUpMaker.remove();
-        }
-        mrequest.setText("Customer make call");
-        mcdriverinfo.setVisibility(View.GONE);
-        mDrivername.setText("");
-        mDriverPhone.setText("");
-        mDriverCar.setText("");
-        mdriverProfile.setImageResource(R.mipmap.ic_launcher);
-    }
 
 
-    private Marker mDriverMaker;
-    private   DatabaseReference driverLocationRef;
-    private ValueEventListener driverLocationLister;
+
+
     private void getDriverLocation() {
           driverLocationRef = FirebaseDatabase.getInstance().getReference().child("driverWorking").child(driverFoundID).child("l");
           driverLocationLister = driverLocationRef.addValueEventListener(new ValueEventListener() {
@@ -462,7 +457,7 @@ private  DatabaseReference drivehasendedRef;
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                 // in here
                  if(datasnapshot.exists() && requestBool){
-                     Toast.makeText(getApplicationContext(), "getdriverinfo" , Toast.LENGTH_LONG).show();
+
                      List<Object> map = (List<Object>) datasnapshot.getValue();
                      double locationLat = 0;
                      double locationLng = 0;
@@ -510,6 +505,46 @@ private  DatabaseReference drivehasendedRef;
         });
 
     }
+    private void endRide() {
+
+
+        requestBool = false;
+        geoQuery.removeAllListeners();
+
+        if (driverLocationRef != null){
+            driverLocationRef.removeEventListener(driverLocationLister);
+
+        }
+        if (drivehasendedRef != null){
+            drivehasendedRef.removeEventListener(drivehasendedRefLisnter);
+
+        }
+
+
+        if(driverFoundID != null){
+            //part 12 9.42 time
+            DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID).child("CustomerRequest");
+            driverRef.removeValue();
+            driverFoundID = null;
+
+        }
+        driverFound = false ;
+        radius = 1;
+        String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("CustomerRequest");
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.removeLocation(userid);
+
+        if(pickUpMaker != null){
+            pickUpMaker.remove();
+        }
+        mrequest.setText("Customer make call");
+        mcdriverinfo.setVisibility(View.GONE);
+        mDrivername.setText("");
+        mDriverPhone.setText("");
+        mDriverCar.setText("");
+        mdriverProfile.setImageResource(R.mipmap.ic_launcher);
+    }
 
 
     private boolean checkGooglePlayservices() {
@@ -521,7 +556,9 @@ private  DatabaseReference drivehasendedRef;
             Dialog dialog = googleApiAvailability.getErrorDialog(this, result, 201, new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialogInterface) {
-                    Toast.makeText(customerMapActivity.this, "user canced dialof", Toast.LENGTH_LONG).show();
+                    Toasty.error(getApplicationContext(),"User cancelled dialog", Toast.LENGTH_LONG, true).show();
+
+
 
                 }
             });
@@ -541,7 +578,7 @@ private  DatabaseReference drivehasendedRef;
 
             @Override
             public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                Toast.makeText(customerMapActivity.this, "Going settings", Toast.LENGTH_LONG).show();
+
 
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -617,7 +654,9 @@ private  DatabaseReference drivehasendedRef;
                             throw new RuntimeException(ex);
                         }
                         if (e.getStatusCode() == LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE) {
-                            Toast.makeText(customerMapActivity.this, "setting anvaible able no in dedice", Toast.LENGTH_LONG).show();
+                            Toasty.error(getApplicationContext(),"Setting are not available in your device", Toast.LENGTH_LONG, true).show();
+
+
 
                         }
                     }
@@ -663,12 +702,14 @@ private  DatabaseReference drivehasendedRef;
         if(resultCode==101){
 
             if(resultCode==RESULT_OK){
+                Toasty.success(getApplicationContext(),"GPS is enabled", Toast.LENGTH_LONG, true).show();
 
-                Toast.makeText(customerMapActivity.this, "now gps is enabled", Toast.LENGTH_LONG).show();
+
 
             }if(resultCode==RESULT_CANCELED){
+                Toasty.error(getApplicationContext(),"GPS is not enabled", Toast.LENGTH_LONG, true).show();
 
-                Toast.makeText(customerMapActivity.this, "cancelld", Toast.LENGTH_LONG).show();
+
 
             }
         }

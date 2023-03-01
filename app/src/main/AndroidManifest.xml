@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
-<!--    foodmart539@gmail.com-->
+    <!-- foodmart539@gmail.com -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -17,6 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31" >
+        <activity
+            android:name=".DriverMapsActivity"
+            android:exported="false"
+        android:theme="@style/Theme.NoactionBar"
+            />
         <activity
             android:name=".officersplashactivity"
             android:exported="false"
@@ -53,7 +57,7 @@
         <activity
             android:name=".DriverLogInActivity"
             android:exported="false"
-            android:theme="@style/Theme.MyApplicationNoActionBar"/>
+            android:theme="@style/Theme.MyApplicationNoActionBar" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -70,13 +74,13 @@
             android:value="AIzaSyB2LbzPvry2QTzMZI_ZNihy374XkpcWi58" />
 
         <activity
-            android:name=".DriverMapsActivity"
-            android:theme="@style/Theme.MyApplication"
-            android:exported="false" />
+            android:name=".DriverMapsActivityold"
+            android:exported="false"
+            android:theme="@style/Theme.MyApplication" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyApplicationNoActionBar"  >
+            android:theme="@style/Theme.MyApplicationNoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

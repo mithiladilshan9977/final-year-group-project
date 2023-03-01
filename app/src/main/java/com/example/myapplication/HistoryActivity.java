@@ -6,7 +6,6 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -86,7 +85,7 @@ public class HistoryActivity extends AppCompatActivity {
                                  mhistoryimage.setVisibility(View.GONE);
                                  mnestedScrollView.setVisibility(View.VISIBLE);
 
-                                 Toast.makeText(getApplicationContext() ,    "has user data", Toast.LENGTH_SHORT).show();
+
 
                              }
                              HistoryObject obj  =new HistoryObject(historyDriverName, historyDriverPhone,historyDriverDisprition );
@@ -96,7 +95,7 @@ public class HistoryActivity extends AppCompatActivity {
                              mnoHistoryText.setVisibility(View.VISIBLE);
                              mhistoryimage.setVisibility(View.VISIBLE);
                              mnestedScrollView.setVisibility(View.GONE);
-                             Toast.makeText(getApplicationContext() ,    "No user data", Toast.LENGTH_SHORT).show();
+
 
                          }
             }

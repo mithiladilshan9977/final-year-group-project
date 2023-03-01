@@ -23,6 +23,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import es.dmoral.toasty.Toasty;
+
 public class DriverLogInActivity extends AppCompatActivity {
  private Button mLogin , mRegistertion , mGoBack ;
     private EditText mEmail , mPassword , mReenterPassword, mNICnumber ,mEmailLogin, mPasswordLogin;
@@ -144,14 +146,19 @@ public class DriverLogInActivity extends AppCompatActivity {
                         if(!task.isSuccessful()){
                             if(task.getException() instanceof FirebaseAuthUserCollisionException){
                                 loadingDialog.stopAlert();
-                                Toast.makeText(DriverLogInActivity.this , "You are already registered" , Toast.LENGTH_LONG).show();
+                                Toasty.error(getApplicationContext(), "You are already registered", Toast.LENGTH_LONG, true).show();
+
                                 return;
 
                             }else{
-                                Toast.makeText(DriverLogInActivity.this , task.getException().getMessage() , Toast.LENGTH_LONG).show();
+                                Toasty.error(getApplicationContext(), task.getException().getMessage() , Toast.LENGTH_LONG, true).show();
+
+
 
                             }
-                            Toast.makeText(DriverLogInActivity.this , "Check your internet connect" , Toast.LENGTH_LONG).show();
+                            Toasty.error(getApplicationContext(),"Check your internet connect" , Toast.LENGTH_LONG, true).show();
+
+
                         }else{
                             String user_id = mAuth.getCurrentUser().getUid();
                             DatabaseReference currnt_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(user_id).child("email");
@@ -163,7 +170,9 @@ public class DriverLogInActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         loadingDialog.stopAlert();
-                                        Toast.makeText(DriverLogInActivity.this , "Email has sent" , Toast.LENGTH_LONG).show();
+                                        Toasty.success(getApplicationContext(),"Email has sent" , Toast.LENGTH_LONG, true).show();
+
+
                                         Intent intent = new Intent(DriverLogInActivity.this , MainActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(intent);
@@ -171,7 +180,9 @@ public class DriverLogInActivity extends AppCompatActivity {
 
 
                                     }else{
-                                        Toast.makeText(DriverLogInActivity.this , "Email Not sent" , Toast.LENGTH_LONG).show();
+                                        Toasty.success(getApplicationContext(),"Email Not sent" , Toast.LENGTH_LONG, true).show();
+
+
 
                                     }
                                 }
@@ -217,18 +228,24 @@ public class DriverLogInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(!task.isSuccessful()){
                             loadingDialog.stopAlert();
-                            Toast.makeText(DriverLogInActivity.this , task.getException().getMessage() , Toast.LENGTH_LONG).show();
+                            Toasty.success(getApplicationContext(),task.getException().getMessage() , Toast.LENGTH_LONG, true).show();
+
+
                         }else {
                             if(newauth.getCurrentUser().isEmailVerified()){
                                 loadingDialog.stopAlert();
                                 Intent intent = new Intent(getApplicationContext() , DriverMapsActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
-                                Toast.makeText(DriverLogInActivity.this ,  "Verified" , Toast.LENGTH_LONG).show();
+                                Toasty.success(getApplicationContext(),"Verified", Toast.LENGTH_LONG, true).show();
+
+
 
 
                             }else{
-                                Toast.makeText(DriverLogInActivity.this ,  "Please verify the Email" , Toast.LENGTH_LONG).show();
+                                Toasty.info(getApplicationContext(),"Please verify the Email", Toast.LENGTH_LONG, true).show();
+
+
 
                                 loadingDialog.stopAlert();
 

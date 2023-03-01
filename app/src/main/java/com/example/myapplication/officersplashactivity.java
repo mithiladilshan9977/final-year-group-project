@@ -16,7 +16,7 @@ public class officersplashactivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(officersplashactivity.this, DriverMapsActivity.class);
+                Intent intent = new Intent(officersplashactivity.this, DriverMapsActivityold.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

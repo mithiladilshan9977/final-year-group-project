@@ -1,7 +1,10 @@
 package com.example.myapplication;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +15,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -33,6 +37,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import es.dmoral.toasty.Toasty;
 
 public class customerSettingsActivity extends AppCompatActivity {
  private EditText mnameField, mPhoneField;
@@ -79,10 +85,10 @@ public class customerSettingsActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
 
-                            Toast.makeText(getApplicationContext(), "uploaded apple", Toast.LENGTH_LONG).show();
+
 
                         }else {
-                            Toast.makeText(getApplicationContext(), "not uploaded apple", Toast.LENGTH_LONG).show();
+
 
                         }
                 }
@@ -101,10 +107,37 @@ public class customerSettingsActivity extends AppCompatActivity {
         mProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGetContent.launch("image/*");
+                AlertDialog.Builder builder = new AlertDialog.Builder(customerSettingsActivity.this);
+                builder.setTitle("Choose option");
 
+                String[] options = {"Open camera" , "Open Gallery"};
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0){
+                            try {
+                                Intent intent = new Intent();
+                                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivity(intent);
+                            }catch (Exception e){
+                                Toasty.error(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG, true).show();
+
+
+                            }
+
+                        }
+                        if (which == 1){
+                            mGetContent.launch("image/*");
+
+                        }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
+
+
 
 
 
@@ -141,7 +174,9 @@ public class customerSettingsActivity extends AppCompatActivity {
             reference.putFile(imageURI).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getApplicationContext(), "Image failed" ,   Toast.LENGTH_LONG).show();
+                    Toasty.error(getApplicationContext(),"Image failed to upload", Toast.LENGTH_LONG, true).show();
+
+
 
                     finish();
                     return;
@@ -166,9 +201,9 @@ public class customerSettingsActivity extends AppCompatActivity {
                         Map newImage = new HashMap();
                         newImage.put("profileImageUrl" , downloadUri.toString());
                         mCustomerDatabase.updateChildren(newImage);
-                        Toast.makeText(getApplicationContext(), "Image uploaded" ,   Toast.LENGTH_LONG).show();
+                        Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
 
-                        finish();
+                         finish();
                         return;
                     } else {
 
@@ -234,7 +269,8 @@ public class customerSettingsActivity extends AppCompatActivity {
                @Override
                public void onComplete(@NonNull Task task) {
                    if (task.isSuccessful()){
-                       Toast.makeText(getApplicationContext(), "Updated" ,   Toast.LENGTH_LONG).show();
+                       Toasty.success(getApplicationContext(),"Updated", Toast.LENGTH_LONG, true).show();
+
                      loadingDialog.stopAlert();
                    }
                }

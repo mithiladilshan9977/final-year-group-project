@@ -40,20 +40,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:orientation="horizontal"
-
-        android:visibility="visible"
         android:background="@drawable/show_driver_customer_info"
+       android:visibility="gone"
+
+        android:elevation="100dp"
+
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/radioGroup"
         map:layout_constraintEnd_toEndOf="parent"
-        android:elevation="100dp"
         map:layout_constraintStart_toStartOf="parent">
 
         <ImageView
+            android:id="@+id/driverProfile"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:id="@+id/driverProfile"
             android:src="@drawable/customer_driver_prfile" />
 
         <LinearLayout
@@ -66,11 +67,11 @@
                 android:id="@+id/driverName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
                 android:paddingBottom="20sp"
-                android:text="dilshan" />
+                android:text="dilshan"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/driverphonenumber"
@@ -89,9 +90,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="20sp"
+                android:text="Bukati"
                 android:textColor="@color/black"
-                android:textSize="20dp"
-                android:text="Bukati" />
+                android:textSize="20dp" />
 
 
         </LinearLayout>
@@ -112,7 +113,7 @@
 
         map:layout_constraintTop_toTopOf="parent"
         map:layout_constraintVertical_bias="0.0"
-        tools:context=".DriverMapsActivity">
+        tools:context=".DriverMapsActivityold">
 
 
         <RatingBar
@@ -130,7 +131,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/request">
+        android:gravity="center"
+        android:background="@color/low_white"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3">
 
         <RadioButton
             android:id="@+id/userX"
@@ -158,19 +161,43 @@
 
 
 
-    <Button
-        android:id="@+id/request"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:text="Customer make call"
-        android:elevation="5dp"
-        android:layout_marginTop="19dp"
-        android:textColor="@color/white"
-      android:backgroundTint="@color/brown"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--    <Button-->
+<!--        android:id="@+id/request"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:text="Customer make call"-->
+<!--        android:elevation="5dp"-->
+<!--        android:layout_marginTop="19dp"-->
+<!--        android:textColor="@color/white"-->
+<!--      android:backgroundTint="@color/brown"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottome_sheet_corners"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="-40dp"
+            android:elevation="100dp"
+
+            android:src="@drawable/baseline_remove_24" />
+
+        <Button
+            android:id="@+id/bottmSheetButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="-10dp"
 
 
+            />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
