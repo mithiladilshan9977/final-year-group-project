@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
 
         android:background="@drawable/show_driver_customer_info"
-       android:visibility="gone"
+
 
         android:elevation="100dp"
 

@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:gravity="bottom"
-            android:visibility="gone"
+
             android:background="@drawable/show_driver_customer_info"
             map:layout_constraintBottom_toBottomOf="parent"
             android:elevation="100dp"

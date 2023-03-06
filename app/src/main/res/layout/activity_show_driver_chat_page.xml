@@ -1,23 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ShowDriverChatPage">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/username"
-        android:text="mithila"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/phonenumebrnew"
-        android:text="0772006547"
-        />
+    android:background="@color/white"
+    tools:context=".ShowUserChatPage">
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/brown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/goBackArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/goback_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
+            android:id="@+id/chatUserName"
+            android:layout_toEndOf="@+id/goBackArrow"
+            android:text="MITHILA DILSHAN"
+            android:textColor="@color/white"
+            android:textSize="26sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
+            android:id="@+id/chatUserPhone"
+            android:layout_toEndOf="@+id/chatUserName"
+            android:text="(0772006985)"
+
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+    </RelativeLayout>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/applogo"
+        android:id="@+id/profileImage"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/message"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
 
-</LinearLayout>
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/cam_send"
+        android:id="@+id/cam_SendMessage"
+         android:layout_margin="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/message"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+ <com.google.android.material.textfield.TextInputLayout
+     android:layout_width="0dp"
+     android:id="@+id/message"
+     android:layout_height="wrap_content"
+     app:layout_constraintEnd_toStartOf="@+id/fab_send"
+     app:layout_constraintStart_toStartOf="@id/cam_SendMessage"
+     app:layout_constraintBottom_toBottomOf="parent"
+     app:boxBackgroundColor="@color/white"
+     android:paddingStart="10dp"
+     android:hint="Type message here"
+     >
+     <com.google.android.material.textfield.TextInputEditText
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         >
+
+     </com.google.android.material.textfield.TextInputEditText>
+ </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/messgesend"
+        android:id="@+id/fab_send"
+     android:layout_marginEnd="30dp"
+        app:layout_constraintStart_toEndOf="@+id/message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="s"
+        android:id="@+id/send_poto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

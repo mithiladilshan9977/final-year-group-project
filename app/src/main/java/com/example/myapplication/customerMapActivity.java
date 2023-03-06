@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
@@ -103,7 +104,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
  private Uri driverPicUri;
 
-
+   private MediaPlayer mediaPlayer;
     private   DatabaseReference  driverLocationRef;
     private ValueEventListener driverLocationLister;
     private int radius = 2;
@@ -133,7 +134,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
         destinationLatLng = new LatLng(0.0,0.0);
        mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.userX);
-
+        mediaPlayer = MediaPlayer.create(customerMapActivity.this, R.raw.notificationsound);
         createDialog();
        mbottmSheetButton.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -207,10 +208,13 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
         mDriverPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                     Intent intent = new Intent(getApplicationContext() , ShowDriverChatPage.class);
-                     intent.putExtra("PHONE_NUMBER" , mDriverPhone.toString());
-                     intent.putExtra("DRIVER_NAME" , mDrivername.toString());
-                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                     Intent intent = new Intent(getApplicationContext() , ShowUserChatPage.class);
+                     intent.putExtra("DRIVER_NAME" ,mDrivername.getText().toString() );
+                     intent.putExtra("DRIVER_PHONE" ,mDriverPhone.getText().toString() );
+                     intent.putExtra("DRIVER_FOUND_ID" , driverFoundID);
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                      startActivity(intent);
             }
         });
@@ -324,8 +328,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
     }
 
 
-
     private void gerDriverInfo(){
+        mediaPlayer.start();
         putIntoHistoryPage();
         mcdriverinfo.setVisibility(View.VISIBLE);
         DatabaseReference  mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID);

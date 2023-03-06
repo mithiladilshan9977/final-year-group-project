@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
@@ -102,6 +103,7 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     Marker pickUpMarker;
     private  DatabaseReference assigedCustomerPickupLocationRef;
     private  ValueEventListener assigedCustomerPickupLocationRefLisner;
+    private MediaPlayer notifiactionSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -116,6 +118,8 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
         polylines = new ArrayList<>();
 //        logoutbtn = findViewById(R.id.logoutbutton);
         mCustomerProfile = (ImageView) findViewById(R.id.customerProfile);
+            notifiactionSound = MediaPlayer.create(DriverMapsActivity.this, R.raw.notificationsound);
+
 //        drawerLayout = findViewById(R.id.my_drawer_layout);
 //        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
 
@@ -123,6 +127,18 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 //        actionBarDrawerToggle.syncState();
         // Find the toolbar view inside the activity layout
 
+        mCustomerPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), OfficerChatActivity.class);
+                intent.putExtra("CUSTOMER_NAME",mCustomername.getText().toString());
+                intent.putExtra("CUSTOMER_PHONE",mCustomerPhone.getText().toString());
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+            }
+        });
        Toolbar toolbar1  =  findViewById(R.id.toolbar);
        setSupportActionBar(toolbar1);
         drawer = findViewById(R.id.drawer_layout);
@@ -343,7 +359,7 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
     private void getAssigedCustomerInfo(){
 
-
+           notifiactionSound.start();
         mcustomerinfo.setVisibility(View.VISIBLE);
         DatabaseReference  mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerID);
 

@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import es.dmoral.toasty.Toasty;
 
 public class MainActivity extends AppCompatActivity {
-Button mapbtn    , submitbtn;
+Button mapbtn    , submitbtn, msound;
 ImageButton mcustomer,mDriver ;
 private LinearLayout noInterConnection;
 private TextView mopenEmail, mcustomerText, moficcerText ;
@@ -27,6 +27,11 @@ private TextView mopenEmail, mcustomerText, moficcerText ;
 private ImageView mmainimage;
 
 private FirebaseAuth mAuth;
+
+
+/////////////
+
+    NotificationHelper notificationHelper;
 
 
 
@@ -43,6 +48,19 @@ private FirebaseAuth mAuth;
         mmainimage = (ImageView) findViewById(R.id.mainimage);
         mcustomerText = (TextView) findViewById(R.id.customertext) ;
         moficcerText = (TextView) findViewById(R.id.officertext) ;
+        Button mnotificationbtn = (Button) findViewById(R.id.notificationbtn);
+
+        //////
+
+        notificationHelper = new NotificationHelper(this);
+
+        mnotificationbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             notificationHelper.sendHighProrityNotification("Notification from ECAS","the body", DriverMapsActivity.class);
+            }
+        });
+
 
 
         mopenEmail.setOnClickListener(new View.OnClickListener() {
