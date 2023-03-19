@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
 
 import es.dmoral.toasty.Toasty;
@@ -40,6 +42,7 @@ private FirebaseAuth mAuth;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         mcustomer = findViewById(R.id.customer);
         mDriver = findViewById(R.id.driver);
         noInterConnection= (LinearLayout) findViewById(R.id.nointerconnectionLayout);
@@ -48,18 +51,20 @@ private FirebaseAuth mAuth;
         mmainimage = (ImageView) findViewById(R.id.mainimage);
         mcustomerText = (TextView) findViewById(R.id.customertext) ;
         moficcerText = (TextView) findViewById(R.id.officertext) ;
-        Button mnotificationbtn = (Button) findViewById(R.id.notificationbtn);
+
+
+        YoYo.with(Techniques.FadeInLeft).duration(1500).playOn(mcustomer);
+        YoYo.with(Techniques.FadeInRight).duration(1500).playOn(mDriver);
+        YoYo.with(Techniques.FadeInUp).duration(1500).playOn(mmainimage);
+
+
+
 
         //////
 
-        notificationHelper = new NotificationHelper(this);
 
-        mnotificationbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-             notificationHelper.sendHighProrityNotification("Notification from ECAS","the body", DriverMapsActivity.class);
-            }
-        });
+
+
 
 
 

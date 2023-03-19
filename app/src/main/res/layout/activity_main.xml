@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/gradianColor"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="380dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -88,6 +88,7 @@
         android:text="Emergency Complaint Automation System"
         android:textColor="@color/white"
           android:gravity="center"
+
         android:layout_marginTop="20dp"
         android:textSize="30sp" />
 
@@ -105,11 +106,7 @@
             android:layout_height="wrap_content"
 
             >
-<Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Bapple"
-    android:id="@+id/notificationbtn"/>
+
 
             <ImageButton
                 android:id="@+id/customer"
@@ -173,7 +170,7 @@
         android:layout_marginStart="50dp"
         android:id="@+id/openEmail"
         android:textColor="@color/purple_700"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         />
 
 

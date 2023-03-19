@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -37,6 +39,7 @@ public class customerLoginActivity extends AppCompatActivity {
     private ImageView mloginimage , msignupimage;
     LinearLayout mregisterLinerLayout, mloginLenerLayout;
     private boolean checkEmail = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +64,17 @@ public class customerLoginActivity extends AppCompatActivity {
         mloginLenerLayout.setVisibility(View.GONE);
 
         //images
-        mloginimage = (ImageView) findViewById(R.id.loginimage);
-        msignupimage = (ImageView) findViewById(R.id.signupimage);
+        mloginimage =    findViewById(R.id.loginimage);
+        msignupimage =   findViewById(R.id.signupimage);
 
         mregisterLinerLayout.setVisibility(View.VISIBLE);
         mloginLenerLayout.setVisibility(View.GONE);
+
+        YoYo.with(Techniques.FadeInUp).duration(1500).playOn(mEmail);
+        YoYo.with(Techniques.FadeInUp).duration(2000).playOn(mPassword);
+        YoYo.with(Techniques.FadeInUp).duration(2500).playOn(mReenterPassword);
+        YoYo.with(Techniques.FadeInUp).duration(3000).playOn(mNICnumber);
+
 
 //        if(mAuth.getCurrentUser() != null){
 //            Intent intent = new Intent(customerLoginActivity.this, splashScreen.class);

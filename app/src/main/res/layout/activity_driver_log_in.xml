@@ -40,6 +40,7 @@
         android:visibility="gone"
         android:layout_marginTop="8dp"/>
 
+
     <ImageView
         android:layout_width="230dp"
         android:layout_height="230dp"

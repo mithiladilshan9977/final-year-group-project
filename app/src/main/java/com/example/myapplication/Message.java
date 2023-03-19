@@ -4,16 +4,18 @@ public class Message {
     private String userEmail;
     private String message;
     private String dateTime;
+    String mProfile;
 
     public Message() {
 
     }
 
 
-    public Message(String userEmail, String message, String dateTime) {
+    public Message(String userEmail, String message, String dateTime ) {
         this.userEmail = userEmail;
         this.message = message;
         this.dateTime = dateTime;
+
     }
 
     public String getUserEmail() {
@@ -39,4 +41,6 @@ public class Message {
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
+
+
 }

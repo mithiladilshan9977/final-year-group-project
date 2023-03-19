@@ -43,8 +43,6 @@ import com.google.firebase.storage.UploadTask;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
@@ -52,8 +50,11 @@ public class ShowUserChatPage extends AppCompatActivity {
 
 
     RecycleViewAdapter adapter;
-    RecyclerView recyclerView;
     ArrayList<Message> list;
+    ArrayList<ImageClass> imageList;
+    ImageViewAdapter imageViewAdapter;
+    RecyclerView recyclerView;
+
     TextInputLayout message;
     FloatingActionButton send;
     DatabaseReference db,mCustomerDatabase,mDriverDatabase;
@@ -74,6 +75,8 @@ public class ShowUserChatPage extends AppCompatActivity {
 
     Button msend_poto;
      String checker = "";
+     StorageReference reference;
+     Uri downloadUri;
 
 
     private static final  int PICK_IMAGE = 1;
@@ -169,7 +172,7 @@ public class ShowUserChatPage extends AppCompatActivity {
 
                         }
                         if (which == 1){
-//                            mGetContent.launch("image/*");
+                            mGetContent.launch("image/*");
 
                         }
                     }
@@ -206,9 +209,10 @@ public class ShowUserChatPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 String msg = message.getEditText().getText().toString();
                 String dateTime = "10:00:00 P.M";
-              db.child("Messages").child(DriverFoundId).push().setValue(new Message(uEmail, msg, timeStamp)).addOnCompleteListener(new OnCompleteListener<Void>() {
+              db.child("Messages").child(DriverFoundId).child("text").push().setValue(new Message(uEmail, msg, timeStamp )).addOnCompleteListener(new OnCompleteListener<Void>() {
                   @Override
                   public void onComplete(@NonNull Task<Void> task) {
                       message.getEditText().setText("");
@@ -222,11 +226,21 @@ public class ShowUserChatPage extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
 
+//        imageViewAdapter = new ImageViewAdapter(this, imageList);
+//        LinearLayoutManager llmanager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
+//        recyclerView.setLayoutManager(llmanager);
+//        recyclerView.setAdapter(imageViewAdapter);
+
+
+
+
+
+
     }
 
     private void uploadImage() {
         if (imageURI != null){
-            StorageReference reference = storage.getReference().child("profile_image_chat").child(uid);
+              reference = storage.getReference().child("profile_image_chat").child(uid);
 
             reference.putFile(imageURI).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -254,12 +268,21 @@ public class ShowUserChatPage extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         //start from here
-                        Uri downloadUri = task.getResult();
-                        Map newImage = new HashMap();
-                        newImage.put("profileImageUrlChat" , downloadUri.toString());
-                        mDriverDatabase.updateChildren(newImage);
+                          downloadUri = task.getResult();
 
-                        Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
+                        db.child("Messages").child(DriverFoundId).child("image").push().setValue(new ImageClass(downloadUri.toString())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
+
+                            }
+                        });
+
+//                        Map newImage = new HashMap();
+//                        newImage.put("profileImageUrlChat" , downloadUri.toString());
+//                        mDriverDatabase.updateChildren(newImage);
+
+//                        Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
 
 
 
@@ -299,16 +322,48 @@ public class ShowUserChatPage extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         receiveMesages();
+//        loadImages();
     }
 
+//    private void loadImages() {
+//        db.child("Messages").child(DriverFoundId).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists()){
+//                    if(imageList != null){
+//                        imageList.clear();
+//                        for (DataSnapshot snap: snapshot.getChildren())
+//                        {
+//                            ImageClass imageClass = snap.getValue(ImageClass.class);
+//                            imageList.add(imageClass);
+//                            imageViewAdapter.notifyDataSetChanged();
+//
+//                        }
+//
+//                    }
+//
+//
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
+
     private void receiveMesages(){
-        db.child("Messages").child(DriverFoundId).addValueEventListener(new ValueEventListener() {
+        db.child("Messages").child(DriverFoundId).child("text").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mediaPlayer.start();
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+
                 list.clear();
 
-                 for (DataSnapshot snap:snapshot.getChildren()){
+                 for (DataSnapshot snap:datasnapshot.getChildren()){
+                     mediaPlayer.start();
                      Message message = snap.getValue(Message.class);
                      list.add(message);
                      adapter.notifyDataSetChanged();

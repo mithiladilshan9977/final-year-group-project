@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -63,6 +65,14 @@ public class DriverLogInActivity extends AppCompatActivity {
         //images
         mloginimage.setVisibility(View.VISIBLE);
         msignupimage.setVisibility(View.GONE);
+
+        YoYo.with(Techniques.FadeInUp).duration(1500).playOn(mEmail);
+        YoYo.with(Techniques.FadeInUp).duration(2000).playOn(mPassword);
+        YoYo.with(Techniques.FadeInUp).duration(2500).playOn(mReenterPassword);
+        YoYo.with(Techniques.FadeInUp).duration(3000).playOn(mNICnumber);
+
+
+
 
         if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified()){
             Intent intent = new Intent(DriverLogInActivity.this, DriverMapsActivity.class);

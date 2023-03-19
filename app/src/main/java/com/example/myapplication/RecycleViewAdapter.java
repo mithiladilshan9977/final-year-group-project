@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.ViewHolder> {
     private Context context;
     private ArrayList<Message> list;
+
 
     public RecycleViewAdapter(Context context, ArrayList<Message> list) {
         this.context = context;
@@ -30,9 +32,11 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     @Override
     public void onBindViewHolder(@NonNull RecycleViewAdapter.ViewHolder holder, int position) {
 
+
         holder.username.setText(list.get(position).getUserEmail());
         holder.message.setText(list.get(position).getMessage());
         holder.dateTime.setText(list.get(position).getDateTime());
+
 
 
 
@@ -45,12 +49,17 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView username, message, dateTime;
+        ImageView mProfile;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             username = itemView.findViewById(R.id.user_email);
             message = itemView.findViewById(R.id.user_message);
             dateTime = itemView.findViewById(R.id.user_message_date_time);
+            mProfile = itemView.findViewById(R.id.send_image);
         }
     }
+
+
+
 }
