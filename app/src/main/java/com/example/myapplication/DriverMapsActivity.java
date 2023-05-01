@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -105,6 +106,9 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     private  ValueEventListener assigedCustomerPickupLocationRefLisner;
     private MediaPlayer notifiactionSound;
 
+    String policeStationName;
+    public  static final String SHARED_REF = "shared";
+    public  static final String TEXT = "text";
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
@@ -126,6 +130,22 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 //        drawerLayout.addDrawerListener(actionBarDrawerToggle);
 //        actionBarDrawerToggle.syncState();
         // Find the toolbar view inside the activity layout
+
+           Intent intent = getIntent();
+          policeStationName = intent.getStringExtra("policeStationName");
+
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_REF, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(TEXT,policeStationName);
+        editor.apply();
+
+        if(policeStationName != null && !policeStationName.isEmpty()){
+            update();
+
+        }
+
 
         mCustomerPhone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +178,12 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
                     case R.id.goToSettingsPage:
                         Intent intent1 = new Intent(getApplicationContext(),driverSetting.class);
-                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_REF, MODE_PRIVATE);
+                        String policeStationNamepass =  sharedPreferences.getString(TEXT , "");
+
+                        intent1.putExtra("policeStationName" , policeStationNamepass);
+
                         startActivity(intent1);
                         break;
 
@@ -238,6 +263,13 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
             }
         }
+    }
+
+    private void update() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_REF, MODE_PRIVATE);
+        policeStationName =  sharedPreferences.getString(TEXT , "");
+        Toast.makeText(getApplicationContext(), policeStationName+"2365" ,Toast.LENGTH_LONG).show();
+
     }
 
     @Override

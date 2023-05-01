@@ -5,25 +5,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ImageViewAdapter extends RecyclerView.Adapter<ImageViewAdapter.ImageHolder>  {
 
-    private Context newcontext;
-    private ArrayList<ImageClass> list;
+
     ImageView mProfile;
 
+    private Context context;
+    private List<String> imageUris;
 
 
-    public ImageViewAdapter(Context newcontext, ArrayList<ImageClass> list) {
-        this.newcontext = newcontext;
-        this.list = list;
+
+
+    public ImageViewAdapter( Context context, List<String> imageUris) {
+        this.context = context;
+        this.imageUris = imageUris;
     }
 
 
@@ -32,31 +36,47 @@ public class ImageViewAdapter extends RecyclerView.Adapter<ImageViewAdapter.Imag
     @NonNull
     @Override
     public ImageViewAdapter.ImageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view    = LayoutInflater.from(newcontext).inflate(R.layout.image_message_design, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.image_message_design, parent, false);
+
         return new ImageHolder(view);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ImageViewAdapter.ImageHolder holder, int position) {
 
-        Glide.with(newcontext.getApplicationContext()).load(list.get(position).getmProfile()).into(mProfile);
+
+    @Override
+    public void onBindViewHolder(@NonNull ImageHolder holder, int position) {
+
+        String imageUri = imageUris.get(position);
+        Picasso.get().load(imageUri).into(holder.imageView);
+
+
     }
 
-    @Override
     public int getItemCount() {
- if (list != null){
-     return list.size();
- }else{
-     return 0;
- }
+        if (imageUris != null) {
+            int size = imageUris.size();
+            return size;
+        }else{
+            Toast.makeText(context.getApplicationContext(), "null",Toast.LENGTH_LONG).show();
+
+            return 0;
+        }
+
     }
+
 
     public class ImageHolder extends RecyclerView.ViewHolder {
 
+        ImageView imageView;
+
         public ImageHolder(@NonNull View itemView) {
             super(itemView);
-            mProfile = itemView.findViewById(R.id.sent_image);
+            imageView = itemView.findViewById(R.id.sent_image);
+
+
 
         }
     }
 }
+
+

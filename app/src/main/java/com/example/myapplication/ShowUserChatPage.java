@@ -322,38 +322,38 @@ public class ShowUserChatPage extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         receiveMesages();
-//        loadImages();
+        loadImages();
     }
 
-//    private void loadImages() {
-//        db.child("Messages").child(DriverFoundId).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists()){
-//                    if(imageList != null){
-//                        imageList.clear();
-//                        for (DataSnapshot snap: snapshot.getChildren())
-//                        {
-//                            ImageClass imageClass = snap.getValue(ImageClass.class);
-//                            imageList.add(imageClass);
-//                            imageViewAdapter.notifyDataSetChanged();
-//
-//                        }
-//
-//                    }
-//
-//
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
+    private void loadImages() {
+        db.child("Messages").child(DriverFoundId).child("image").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    if(imageList != null){
+                        imageList.clear();
+                        for (DataSnapshot snap: snapshot.getChildren())
+                        {
+                            ImageClass imageClass = snap.getValue(ImageClass.class);
+                            imageList.add(imageClass);
+                            imageViewAdapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     private void receiveMesages(){
         db.child("Messages").child(DriverFoundId).child("text").addValueEventListener(new ValueEventListener() {

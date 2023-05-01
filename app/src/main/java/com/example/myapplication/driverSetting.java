@@ -56,6 +56,7 @@ public class driverSetting  extends AppCompatActivity {
     LoadingDialog loadingDialog;
 
     private FirebaseUser user;
+    String PoliceStationName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +78,12 @@ public class driverSetting  extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         loadingDialog = new LoadingDialog(driverSetting.this);
 
-        mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(userid);
+        Intent getNamePolice = getIntent();
+          PoliceStationName = getNamePolice.getStringExtra("policeStationName");
+        Toast.makeText(getApplicationContext(), PoliceStationName+"1254"  ,Toast.LENGTH_SHORT) .show();
+
+
+        mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(PoliceStationName+userid);
         getSaveInfor();
 
         String newname = "mithila dilshan";
@@ -161,6 +167,7 @@ public class driverSetting  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(driverSetting.this , DriverMapsActivity.class);
+                intent.putExtra("policeStationName",PoliceStationName);
                 startActivity(intent);
                 finish();
                 return;
@@ -204,8 +211,10 @@ public class driverSetting  extends AppCompatActivity {
                         newImage.put("profileImageUrl" , downloadUri.toString());
                         mDriverDatabase.updateChildren(newImage);
 
+                        Intent intent = new Intent(getApplicationContext(), DriverMapsActivity.class);
+                        intent.putExtra("policeStationName",PoliceStationName);
                         Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
-
+                        startActivity(intent);
 
 
                         finish();
@@ -305,6 +314,7 @@ public class driverSetting  extends AppCompatActivity {
         Toasty.success(getApplicationContext(),"Updated", Toast.LENGTH_LONG, true).show();
 
         Intent intent = new Intent(driverSetting.this, DriverMapsActivity.class);
+        intent.putExtra("policeStationName",PoliceStationName);
         startActivity(intent);
     }
 }

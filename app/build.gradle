@@ -68,7 +68,8 @@ dependencies {
     implementation 'com.github.GrenderG:Toasty:1.5.2'
     implementation 'com.daimajia.androidanimations:library:2.4@aar'
     implementation "com.airbnb.android:lottie:3.4.0"
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+
+    implementation 'com.squareup.picasso:picasso:2.8'
 
 
 

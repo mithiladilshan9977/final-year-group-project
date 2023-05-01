@@ -84,7 +84,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
     GoogleMap googleMap;
     LocationRequest locationRequest;
     FusedLocationProviderClient fusedLocationProviderClient;
-    Button logoutbtn , mrequest  , show , mbottmSheetButton;
+    Button logoutbtn , mrequest  , show , mbottmSheetButton,mgotoimagechat;
     Location mLastLocation;
     Double latitudenew , longitudenew;
     LatLng pickuplocation , destinationLatLng;
@@ -135,6 +135,21 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
        mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.userX);
         mediaPlayer = MediaPlayer.create(customerMapActivity.this, R.raw.notificationsound);
+        mgotoimagechat = (Button) findViewById(R.id.gotoimagechat);
+
+        mgotoimagechat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext() , ImageChatActivity.class);
+                intent.putExtra("DRIVER_NAME" ,mDrivername.getText().toString() );
+                intent.putExtra("DRIVER_PHONE" ,mDriverPhone.getText().toString() );
+                intent.putExtra("DRIVER_FOUND_ID" , driverFoundID);
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+
         createDialog();
        mbottmSheetButton.setOnClickListener(new View.OnClickListener() {
            @Override
