@@ -112,6 +112,9 @@ public class ShowUserChatPage extends AppCompatActivity {
         mchatUserName.setText(DriverName);
         mchatUserPhone.setText("("+DriverPhone+")");
 
+        Toast.makeText(getApplicationContext(),DriverFoundId+"   DriverFoundId", Toast.LENGTH_LONG).show();
+
+
 //        mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Messages").child(DriverFoundId).child(uid);
 
         mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Messages").child(DriverFoundId).child(uid);

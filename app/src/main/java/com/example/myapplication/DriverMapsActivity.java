@@ -102,11 +102,11 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     private ImageView mCustomerProfile;
 
     Marker pickUpMarker;
-    private  DatabaseReference assigedCustomerPickupLocationRef;
+    private  DatabaseReference assigedCustomerPickupLocationRef,assigedCustomerRef;
     private  ValueEventListener assigedCustomerPickupLocationRefLisner;
     private MediaPlayer notifiactionSound;
 
-    String policeStationName;
+    String policeStationName,policeStationLocation,stationNameWithUID,userid,policeStationLocation_getdata,staionwithdriverid;
     public  static final String SHARED_REF = "shared";
     public  static final String TEXT = "text";
     @Override
@@ -349,36 +349,61 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void getAssideCustomer() {
-        //customerRiderID at the end
         driverid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference assigedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverid);
-        assigedCustomerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        //get the station name
+        DatabaseReference getStationLocation = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverid);
+
+        getStationLocation.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                if ( datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
 
-                if (datasnapshot.exists() && datasnapshot.getChildrenCount() > 0) {
+                    Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
+                    if(map.get("stationLocation") != null){
+                        policeStationLocation_getdata = map.get("stationLocation").toString();
 
-                    Map<String , Object> map = (Map<String , Object>) datasnapshot.getValue();
+                         assigedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(policeStationLocation_getdata+driverid);
+                        assigedCustomerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
 
-                    status = 1;
-                    customerID =  datasnapshot.getValue().toString();
+                                if (datasnapshot.exists() && datasnapshot.getChildrenCount() > 0) {
+
+                                    Map<String , Object> map = (Map<String , Object>) datasnapshot.getValue();
+
+                                    status = 1;
+                                    customerID =  datasnapshot.getValue().toString();
 
 
-                    if (map.get("customerRiderID") != null){
-                        customerID = map.get("customerRiderID").toString();
+                                    if (map.get("customerRiderID") != null){
+                                        customerID = map.get("customerRiderID").toString();
+
+
+
+                                    }
+                                    getAssigedCustomerPickLocation();
+                                    getAssigedCustomerInfo();
+
+
+                                }else{
+
+                                    endRide();
+
+                                }
+
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
                     }
-                    getAssigedCustomerPickLocation();
-                    getAssigedCustomerInfo();
-
-
-                }else{
-
-                    endRide();
-
                 }
-
-
-
             }
 
             @Override
@@ -386,6 +411,11 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
             }
         });
+
+        //customerRiderID at the end
+
+
+
     }
 
 
@@ -662,7 +692,7 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
                 super.onLocationResult(locationResult);
 
 
-                String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                  userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 DatabaseReference refWorking = FirebaseDatabase.getInstance().getReference("driverWorking");
 
                 DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
@@ -676,19 +706,66 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
 
 
+                //get officer UID
+
+
+
                 if(getApplicationContext() !=null) {
-                    switch (customerID){
-                        case "":
-                            geoFireWorking.removeLocation(userid);
-                            geoFireAvailable.setLocation(userid, new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()));
-                            break;
 
-                        default:
-                            geoFireAvailable.removeLocation(userid);
-                            geoFireWorking.setLocation(userid, new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()));
+                    DatabaseReference getStationLocation = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(userid);
 
-                            break;
-                    }
+                    getStationLocation.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                            if ( datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
+
+                                Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
+                                if(map.get("stationLocation") != null){
+                                    policeStationLocation = map.get("stationLocation").toString();
+                                    stationNameWithUID = policeStationLocation + userid;
+
+                                    switch (customerID){
+                                        case "":
+
+                                            geoFireWorking.removeLocation(stationNameWithUID);
+                                            geoFireAvailable.setLocation(stationNameWithUID, new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()));
+                                            Toast.makeText(getApplicationContext(), stationNameWithUID + "  station  ", Toast.LENGTH_LONG).show();
+
+                                            break;
+
+                                        default:
+                                            geoFireAvailable.removeLocation(stationNameWithUID);
+                                            geoFireWorking.setLocation(stationNameWithUID, new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()));
+
+                                            break;
+                                    }
+
+
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+//                    switch (customerID){
+//                        case "":
+//
+//                            geoFireWorking.removeLocation(userid);
+//                            geoFireAvailable.setLocation(userid, new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()));
+//                            Toast.makeText(getApplicationContext(), stationNameWithUID + "  station  ", Toast.LENGTH_LONG).show();
+//
+//                            break;
+//
+//                        default:
+//                            geoFireAvailable.removeLocation(stationNameWithUID);
+//                            geoFireWorking.setLocation(stationNameWithUID, new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()));
+//
+//                            break;
+//                    }
 
 
 
