@@ -43,6 +43,7 @@ String pilicetationName;
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +70,11 @@ String pilicetationName;
         //////
 
 
-
+        Intent getPoliceStation =  getIntent();
+        if (getPoliceStation.hasExtra("policeStationName")){
+            pilicetationName= getPoliceStation.getStringExtra("policeStationName");
+            Toast.makeText(getApplicationContext(), pilicetationName + "settingsssssssssss", Toast.LENGTH_SHORT).show();
+        }
 
         mgotoimagechat.setOnClickListener(new View.OnClickListener() {
             @Override

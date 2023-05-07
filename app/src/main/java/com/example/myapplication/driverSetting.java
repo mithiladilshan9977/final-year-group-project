@@ -43,12 +43,12 @@ import java.util.Map;
 import es.dmoral.toasty.Toasty;
 
 public class driverSetting  extends AppCompatActivity {
-    private EditText mnameField, mPhoneField , mCarField;
+    private EditText mnameField, mPhoneField , mCarField,mpoliceID,mnicnumber;
     private Button mBack, mConfirm;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDriverDatabase;
-    private  String userid, mName , mPhone , mCar , mservice , mProfile;
+    private  String userid, mName , mPhone , mCar , mservice , mProfile,policeID,NICnumber;
     private ImageView mProfileImage ;
     FirebaseStorage storage;
     Uri imageURI;
@@ -69,6 +69,8 @@ public class driverSetting  extends AppCompatActivity {
         mConfirm = findViewById(R.id.confirm);
         mCarField = findViewById(R.id.car);
         mProfileImage = findViewById(R.id.profileImage);
+        mpoliceID = findViewById(R.id.policeID);
+        mnicnumber = findViewById(R.id.nicnumber);
 
         mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.userX);
@@ -79,7 +81,8 @@ public class driverSetting  extends AppCompatActivity {
         loadingDialog = new LoadingDialog(driverSetting.this);
 
         Intent getNamePolice = getIntent();
-          PoliceStationName = getNamePolice.getStringExtra("policeStationName");
+          PoliceStationName = getNamePolice.getStringExtra("officerPoliceStation");
+
         Toast.makeText(getApplicationContext(), PoliceStationName+"1254"  ,Toast.LENGTH_SHORT) .show();
 
 
@@ -246,7 +249,19 @@ public class driverSetting  extends AppCompatActivity {
                     if(map.get("phone") != null){
                         mPhone = map.get("phone").toString();
                         mPhoneField.setText(mPhone);
-                    }if(map.get("profileImageUrl") != null){
+                    }
+
+                    if(map.get("policeIDNumber") != null){
+                        policeID = map.get("policeIDNumber").toString();
+                        mpoliceID.setText(policeID);
+                    }
+                    if(map.get("NICNumber") != null){
+                        NICnumber = map.get("NICNumber").toString();
+                        mnicnumber.setText(NICnumber);
+                    }
+
+
+                    if(map.get("profileImageUrl") != null){
                         mProfile = map.get("profileImageUrl").toString();
 
                         Glide.with(getApplicationContext()).load(mProfile).into(mProfileImage);
@@ -275,9 +290,28 @@ public class driverSetting  extends AppCompatActivity {
         });
     }
     private void saveUserInformation() {
+
+
+
+       DatabaseReference  getDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(userid).child("stationLocation");
+        getDriverDatabase.setValue(PoliceStationName);
+        callToInsertInformation();
+
+
+    }
+
+    private void callToInsertInformation() {
         mName = mnameField.getText().toString();
         mPhone = mPhoneField.getText().toString();
         mCar = mCarField.getText().toString();
+        policeID =   mpoliceID.getText().toString();
+        String StringValuePoliceID = String.valueOf(policeID);
+        NICnumber = mnicnumber.getText().toString();
+        String StringValueNICnumber = String.valueOf(NICnumber);
+
+        int statusnumber = 0;
+        String StringValueNumber = String.valueOf(statusnumber);
+
 
 
         if(mName.isEmpty()){
@@ -298,6 +332,18 @@ public class driverSetting  extends AppCompatActivity {
             loadingDialog.stopAlert();
             return;
         }
+        if(policeID.isEmpty()){
+            mpoliceID.setError("Enter your police ID");
+            mpoliceID.requestFocus();
+            loadingDialog.stopAlert();
+            return;
+        }
+        if(NICnumber.isEmpty()){
+            mnicnumber.setError("Enter your NIC number");
+            mnicnumber.requestFocus();
+            loadingDialog.stopAlert();
+            return;
+        }
 
         int selectid = mRadioGroup.getCheckedRadioButtonId();
         final RadioButton radiobutton = (RadioButton) findViewById(selectid);
@@ -306,10 +352,14 @@ public class driverSetting  extends AppCompatActivity {
         }
         mservice = radiobutton.getText().toString();
         Map userInfo = new HashMap();
+        userInfo.put("status",  "unregistered");
         userInfo.put("name", mName);
         userInfo.put("phone", mPhone);
         userInfo.put("car", mCar);
         userInfo.put("service", mservice);
+        userInfo.put("policeIDNumber", StringValuePoliceID);
+        userInfo.put("NICNumber", StringValueNICnumber);
+
         mDriverDatabase.updateChildren(userInfo);
         Toasty.success(getApplicationContext(),"Updated", Toast.LENGTH_LONG, true).show();
 

@@ -131,8 +131,12 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 //        actionBarDrawerToggle.syncState();
         // Find the toolbar view inside the activity layout
 
-           Intent intent = getIntent();
+          Intent intent = getIntent();
           policeStationName = intent.getStringExtra("policeStationName");
+
+
+//cheking ststus of permmsion
+
 
 
 
@@ -145,7 +149,32 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
             update();
 
         }
+        String useridforpermssion = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference checkPermmsionRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(policeStationName+useridforpermssion) ;
+        checkPermmsionRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                 if(snapshot.exists()){
+                     Map<String, Object> map = (Map<String, Object>) snapshot.getValue();
+                     if(map.get("status") != null){
+                        String registedOrNot = map.get("status").toString();
+                        if(registedOrNot.equals("unregistered")){
+                            Intent intent1 = new Intent(DriverMapsActivity.this , MainActivity.class);
+                            intent1.putExtra("policeStationName" ,policeStationName );
+                            startActivity(intent1);
+                            Toasty.info(getApplicationContext(),"Permission not given yet", Toasty.LENGTH_LONG).show();
 
+                        }
+
+                     }
+                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         mCustomerPhone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,7 +211,7 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
                         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_REF, MODE_PRIVATE);
                         String policeStationNamepass =  sharedPreferences.getString(TEXT , "");
 
-                        intent1.putExtra("policeStationName" , policeStationNamepass);
+                        intent1.putExtra("officerPoliceStation" , policeStationNamepass);
 
                         startActivity(intent1);
                         break;
@@ -191,8 +220,11 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
                         isLoggingOut= true ;
                         disconnectDriver();
                         FirebaseAuth.getInstance().signOut();
+                        SharedPreferences sharedPreferences2 = getSharedPreferences(SHARED_REF, MODE_PRIVATE);
+                        String policeStationNamepass2 =  sharedPreferences2.getString(TEXT , "");
                         Intent intent2 = new Intent(getApplicationContext(),MainActivity.class);
-                        intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent2.putExtra("officerPoliceStation" , policeStationNamepass2);
+
                         startActivity(intent2);
                         break;
 

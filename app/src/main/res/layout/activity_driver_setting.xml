@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,12 +7,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".driverSetting">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:elevation="20dp"
         android:background="@color/brown"
         >
+
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,6 +44,12 @@
         android:layout_marginTop="10dp"
         />
     </androidx.cardview.widget.CardView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,13 +57,35 @@
         android:padding="15dp"
         android:layout_marginTop="15dp"
         >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="If you update the information you have to get the permission again"
+            android:textColor="@color/brown"
+            android:layout_marginBottom="2dp"
+            />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
+        android:hint="Officer name"
         android:id="@+id/name"
 
         />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Police ID number"
+            android:id="@+id/policeID"
+
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="NIC number"
+            android:id="@+id/nicnumber"
+            android:inputType="number"
+
+            />
 
     <EditText
         android:layout_width="match_parent"
@@ -67,7 +99,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Description"
+        android:hint="Description about you"
         android:id="@+id/car"
 
 
@@ -121,4 +153,5 @@
         android:id="@+id/back"/>
 
     </LinearLayout>
+</ScrollView>
 </LinearLayout>

@@ -26,8 +26,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
@@ -42,10 +47,13 @@ public class DriverLogInActivity extends AppCompatActivity {
     LinearLayout mregisterLinerLayout, mloginLenerLayout;
     private ImageView mloginimage , msignupimage;
     private Spinner spinner;
-    private  String dropDownValue,pilicetationName,policeStationName,pilicetationNamenew;
+    private  String dropDownValue,pilicetationName,policeStationName,pilicetationNamenew,statusOfUser;
 
     public  static final String SHARED_REF = "shared";
     public  static final String TEXT = "text";
+
+
+    private DatabaseReference mDriverDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +91,7 @@ public class DriverLogInActivity extends AppCompatActivity {
         YoYo.with(Techniques.FadeInUp).duration(1500).playOn(mEmail);
         YoYo.with(Techniques.FadeInUp).duration(2000).playOn(mPassword);
         YoYo.with(Techniques.FadeInUp).duration(2500).playOn(mReenterPassword);
-        YoYo.with(Techniques.FadeInUp).duration(3000).playOn(mNICnumber);
+
 
 
         //police stattions
@@ -97,7 +105,7 @@ public class DriverLogInActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                   dropDownValue = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getApplicationContext() , dropDownValue +" Police station", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext() , dropDownValue +" Police station", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -109,17 +117,22 @@ public class DriverLogInActivity extends AppCompatActivity {
 
           Intent getIntent = getIntent();
           String policeName =getIntent.getStringExtra("policeStationName");
-        Toasty.success(getApplicationContext(),policeName , Toast.LENGTH_LONG, true).show();
-
-
-        if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified()){
-            Intent intent = new Intent(DriverLogInActivity.this, DriverMapsActivity.class);
-            intent.putExtra("policeStationName", policeName);
 
 
 
-            startActivity(intent);
-        }
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("Users").child("Driver");
+
+
+
+                    if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified()  ){
+
+                        Intent intent = new Intent(DriverLogInActivity.this, DriverMapsActivity.class);
+                        intent.putExtra("policeStationName", policeName);
+
+                        startActivity(intent);
+                    }
+
 
         LoadingDialog loadingDialog =new LoadingDialog(DriverLogInActivity.this);
         firebasequthlistener = new FirebaseAuth.AuthStateListener() {
@@ -188,7 +201,7 @@ public class DriverLogInActivity extends AppCompatActivity {
                 }
                 if(policeStation =="Select your police station")
                 {
-                    Toast.makeText(getApplicationContext() , "Select a police station" , Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext() , "Select a police station" , Toast.LENGTH_LONG).show();
 
                 }
                 if(password.length() == reenterpassword.length() && Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -238,13 +251,10 @@ public class DriverLogInActivity extends AppCompatActivity {
                                         editor.apply();
 
 
-                                        Intent intent = new Intent(DriverLogInActivity.this , MainActivity.class);
+                                        Intent intent = new Intent(DriverLogInActivity.this , driverSetting.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         intent.putExtra("officerPoliceStation", dropDownValue);
                                         startActivity(intent);
-
-
-
 
 
 
@@ -317,19 +327,51 @@ public class DriverLogInActivity extends AppCompatActivity {
                                 pilicetationNamenew =  sharedPreferences.getString(TEXT , "");
 
 
-                                Intent intent = new Intent(getApplicationContext() , DriverMapsActivity.class);
-                                intent.putExtra("policeStationName",pilicetationNamenew);
-                               Toasty.success(getApplicationContext(),pilicetationNamenew+" log in", Toast.LENGTH_LONG, true).show();
-                                startActivity(intent);
+
+                                DatabaseReference officerdatabase = database.getReference().child("Users").child("Driver").child(pilicetationNamenew+newauth.getCurrentUser().getUid());
+
+                                officerdatabase.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                        Map<String, Object> map = (Map<String, Object>) snapshot.getValue();
+
+                                        if(map.get("status") != null){
+                                            statusOfUser = map.get("status").toString();
+                                            if(statusOfUser.equals("unregistered"))
+                                            {
+//
+                                                Toasty.info(getApplicationContext(),"Permission in not given yet", Toast.LENGTH_LONG, true).show();
+
+
+                                            }else{
+
+
+                                                Intent intent = new Intent(getApplicationContext() , DriverMapsActivity.class);
+                                                intent.putExtra("policeStationName",pilicetationNamenew);
+                                                startActivity(intent);
+
+                                                Toasty.success(getApplicationContext(),pilicetationNamenew+" log in", Toast.LENGTH_LONG, true).show();
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+
 //                                    Toasty.success(getApplicationContext(),"Verified", Toast.LENGTH_LONG, true).show();
 
 
 
                             }else{
                                 Toasty.info(getApplicationContext(),"Please verify the Email", Toast.LENGTH_LONG, true).show();
-
-
-
                                 loadingDialog.stopAlert();
 
 
