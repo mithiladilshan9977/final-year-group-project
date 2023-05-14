@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class OfficerChatActivity extends AppCompatActivity {
 
@@ -83,19 +85,42 @@ public class OfficerChatActivity extends AppCompatActivity {
         receiveMesages();
     }
     private void receiveMesages(){
-        db.child("Messages").child(uid).addValueEventListener(new ValueEventListener() {
+
+        DatabaseReference getPoliceStation = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(uid);
+        getPoliceStation.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                 if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
+                     Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
+                     if(map.get("stationLocation") != null){
+                        String policeStationLocation = map.get("stationLocation").toString();
 
-                list.clear();
+                         Toast.makeText(getApplicationContext(),policeStationLocation+  "   " + uid + "  kikiki", Toast.LENGTH_LONG).show();
 
-                for (DataSnapshot snap:snapshot.getChildren()){
-                      message = snap.getValue(Message.class);
-                    notificationHelper.sendHighProrityNotification(customerName,message.getMessage(), DriverMapsActivity.class);
+                         db.child("Messages").child(policeStationLocation+uid).child("text").addValueEventListener(new ValueEventListener() {
+                                             @Override
+                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    list.add(message);
-                    adapter.notifyDataSetChanged();
-                }
+                                                 list.clear();
+
+                                                 for (DataSnapshot snap:snapshot.getChildren()){
+                                                     message = snap.getValue(Message.class);
+                                                     notificationHelper.sendHighProrityNotification(customerName,message.getMessage(), DriverMapsActivity.class);
+
+                                                     list.add(message);
+                                                     adapter.notifyDataSetChanged();
+                                                 }
+                                             }
+
+                                             @Override
+                                             public void onCancelled(@NonNull DatabaseError error) {
+
+                                             }
+                                         });
+
+
+                     }
+                 }
             }
 
             @Override
@@ -103,5 +128,8 @@ public class OfficerChatActivity extends AppCompatActivity {
 
             }
         });
+
+
+
     }
 }

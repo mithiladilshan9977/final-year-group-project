@@ -183,6 +183,8 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
                 intent.putExtra("CUSTOMER_NAME",mCustomername.getText().toString());
                 intent.putExtra("CUSTOMER_PHONE",mCustomerPhone.getText().toString());
 
+
+
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -394,7 +396,9 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
                     if(map.get("stationLocation") != null){
                         policeStationLocation_getdata = map.get("stationLocation").toString();
 
-                         assigedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(policeStationLocation_getdata+driverid);
+                         assigedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child( policeStationLocation_getdata+driverid);
+                        Toast.makeText(getApplicationContext(), policeStationLocation_getdata+driverid + "  ididididi", Toast.LENGTH_LONG).show();
+
                         assigedCustomerRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
@@ -452,8 +456,6 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
 
     private void getAssigedCustomerInfo(){
-
-           notifiactionSound.start();
         mcustomerinfo.setVisibility(View.VISIBLE);
         DatabaseReference  mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerID);
 
@@ -461,6 +463,8 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                 if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
+                    notifiactionSound.start();
+
                     Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
                     if(map.get("name") != null){
 
@@ -761,7 +765,6 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
                                             geoFireWorking.removeLocation(stationNameWithUID);
                                             geoFireAvailable.setLocation(stationNameWithUID, new GeoLocation(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()));
-                                            Toast.makeText(getApplicationContext(), stationNameWithUID + "  station  ", Toast.LENGTH_LONG).show();
 
                                             break;
 

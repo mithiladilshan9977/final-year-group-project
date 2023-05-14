@@ -11,6 +11,8 @@
     <color name="low_color_brown">#AD070D</color>
     <color name="very_low_color_brown">#EBC6C8</color>
     <color name="low_white">#F6E7E7</color>
+    <color name="MainTextColor">#C3C3C3</color>
+
 
 
 </resources>

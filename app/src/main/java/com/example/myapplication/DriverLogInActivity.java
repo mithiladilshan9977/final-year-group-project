@@ -199,9 +199,10 @@ public class DriverLogInActivity extends AppCompatActivity {
                     mEmail.requestFocus();
                     return;
                 }
-                if(policeStation =="Select your police station")
+                if(policeStation.equals("Select your police station"))
                 {
-//                    Toast.makeText(getApplicationContext() , "Select a police station" , Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext() , "Select a police station" , Toast.LENGTH_LONG).show();
+                    return;
 
                 }
                 if(password.length() == reenterpassword.length() && Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -327,7 +328,7 @@ public class DriverLogInActivity extends AppCompatActivity {
                                 pilicetationNamenew =  sharedPreferences.getString(TEXT , "");
 
 
-
+                                Toast.makeText(getApplicationContext(), pilicetationNamenew+newauth.getCurrentUser().getUid() + "     zzzzzzz", Toast.LENGTH_SHORT).show();
                                 DatabaseReference officerdatabase = database.getReference().child("Users").child("Driver").child(pilicetationNamenew+newauth.getCurrentUser().getUid());
 
                                 officerdatabase.addValueEventListener(new ValueEventListener() {

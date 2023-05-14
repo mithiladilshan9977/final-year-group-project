@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="If you update the information you have to get the permission again"
-            android:textColor="@color/brown"
+            android:textColor="@color/low_color_brown"
             android:layout_marginBottom="2dp"
             />
     <EditText
@@ -69,6 +69,8 @@
         android:layout_height="wrap_content"
         android:hint="Officer name"
         android:id="@+id/name"
+        android:textColorHint="@color/brown"
+
 
         />
         <EditText
@@ -76,6 +78,7 @@
             android:layout_height="wrap_content"
             android:hint="Police ID number"
             android:id="@+id/policeID"
+            android:textColorHint="@color/brown"
 
             />
         <EditText
@@ -84,6 +87,7 @@
             android:hint="NIC number"
             android:id="@+id/nicnumber"
             android:inputType="number"
+            android:textColorHint="@color/brown"
 
             />
 
@@ -93,6 +97,7 @@
         android:hint="Phone number"
         android:id="@+id/phonenumebr"
         android:inputType="number"
+        android:textColorHint="@color/brown"
 
         />
 
@@ -102,6 +107,7 @@
         android:hint="Description about you"
         android:id="@+id/car"
 
+        android:textColorHint="@color/brown"
 
         />
 <RadioGroup
@@ -120,11 +126,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hospitel"
+
         android:id="@+id/userblack"/>
     <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CEB"
+
+
         android:id="@+id/userxl"/>
 
 </RadioGroup>

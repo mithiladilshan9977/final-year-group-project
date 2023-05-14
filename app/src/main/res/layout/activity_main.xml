@@ -26,7 +26,7 @@
         android:text="Select who are you"
         android:layout_below="@id/gradianColor"
         android:layout_marginTop="20dp"
-        android:textSize="17dp"
+        android:textSize="18dp"
         android:layout_marginStart="30dp"
         />
 
@@ -84,6 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/mainimage"
         android:elevation="60dp"
+        android:id="@+id/headingtext"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Emergency Complaint Automation System"
         android:textColor="@color/white"
@@ -91,6 +92,16 @@
 
         android:layout_marginTop="20dp"
         android:textSize="30sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Make your life easer"
+        android:elevation="60dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/MainTextColor"
+        android:layout_below="@+id/headingtext"
+        android:gravity="center"/>
 
 
     <LinearLayout
@@ -180,6 +191,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="-6dp"
         android:id="@+id/gotoimagechat"
+        android:visibility="gone"
         android:layout_toEndOf="@+id/openEmail"
         android:text="cam" />
 

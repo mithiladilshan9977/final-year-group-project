@@ -257,7 +257,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
 
         // endRide();
-        DatabaseReference driverlocation = FirebaseDatabase.getInstance().getReference().child("driverAvailabel");
+        // turn adriver avaible into driverWorking
+        DatabaseReference driverlocation = FirebaseDatabase.getInstance().getReference().child("driverWorking");
         GeoFire geoFire = new GeoFire(driverlocation);
         geoQuery = geoFire.queryAtLocation(new GeoLocation(pickuplocation.latitude, pickuplocation.longitude), radius );
         geoQuery.removeAllListeners();
@@ -267,8 +268,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                 if(!driverFound && requestBool){
 
                driverFound = true;
-//                          driverFoundID = key;
-                    DatabaseReference mCustomerdatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(key);
+//                          driverFoundID = key;key
+                    DatabaseReference mCustomerdatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child( key);
 
                     mCustomerdatabase.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -288,15 +289,14 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
                                          driverFound = true;
                                          driverFoundID = datasnapshot.getKey();
-                                         Toast.makeText(getApplicationContext(),driverFoundID+"    dsnapshto val", Toast.LENGTH_LONG).show();
-                                         DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID);
+                                         DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child( driverFoundID);
+
                                          String customerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                          HashMap map = new HashMap();
                                          map.put("customerRiderID", customerID);
                                          map.put("destinationLat", destinationLatLng.latitude);
                                          map.put("destinationLon", destinationLatLng.longitude);
                                          driverRef.updateChildren(map);
-                                         Toast.makeText(getApplicationContext(), "    calling", Toast.LENGTH_LONG).show();
 
                                          mrequest.setText("Looking for your request");
 
@@ -360,7 +360,6 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
         putIntoHistoryPage();
         mcdriverinfo.setVisibility(View.VISIBLE);
         DatabaseReference  mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundID);
-        Toast.makeText(getApplicationContext(),policeStationLocation+driverFoundID + "  ididididi", Toast.LENGTH_LONG).show();
 
         mCustomerDatabase.addValueEventListener(new ValueEventListener() {
             @Override
