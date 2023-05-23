@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -11,6 +12,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +65,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -468,6 +471,12 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
                 if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
                     notifiactionSound.start();
 
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (vibrator != null && vibrator.hasVibrator()) {
+                        // Vibrate for 500 milliseconds (0.5 seconds)
+                        vibrator.vibrate(500);
+                    }
+
                     Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
                     if(map.get("name") != null){
 
@@ -730,8 +739,17 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+                 //added this is condition to check
+                if (currentUser != null) {
+                    userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                } else {
+                    return;
+                }
 
-                  userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
                 DatabaseReference refWorking = FirebaseDatabase.getInstance().getReference("driverWorking");
 
                 DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");

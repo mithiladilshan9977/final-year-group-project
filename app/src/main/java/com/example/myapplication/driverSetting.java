@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -21,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -64,6 +66,7 @@ public class driverSetting  extends AppCompatActivity {
 
     private FirebaseUser user;
     String PoliceStationName;
+    private SwitchCompat switchCompat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +90,85 @@ public class driverSetting  extends AppCompatActivity {
         userid = mAuth.getCurrentUser().getUid();
         storage = FirebaseStorage.getInstance();
         loadingDialog = new LoadingDialog(driverSetting.this);
+        switchCompat = findViewById(R.id.switchCompat);
+
+        checkTheToggleWorkingDays();
+
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    switchCompat.setText("working");
+                   Toasty.success(getApplicationContext(),"You are working",Toasty.LENGTH_LONG).show();
+
+                    DatabaseReference makeHollydayDB = FirebaseDatabase.getInstance().getReference("Users").child("Driver").child(userid);
+                    makeHollydayDB.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                            if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
+                                Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
+                                if(map.get("stationLocation") != null){
+                                    String stationName = map.get("stationLocation").toString();
 
 
+                                    DatabaseReference setWorkingDB = FirebaseDatabase.getInstance().getReference("Users").child("Driver").child(stationName+userid);
+                                    Map userInfo = new HashMap();
+                                    userInfo.put("working", "yes");
 
+                                    setWorkingDB.updateChildren(userInfo);
+
+
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toasty.error(getApplicationContext(),error.getMessage(),Toasty.LENGTH_LONG).show();
+
+                        }
+                    });
+
+
+                } else {
+
+                    switchCompat.setText("holyday");
+                    Toasty.success(getApplicationContext(),"It is a holyday",Toasty.LENGTH_LONG).show();
+
+                    DatabaseReference makeHollydayDB = FirebaseDatabase.getInstance().getReference("Users").child("Driver").child(userid);
+                    makeHollydayDB.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                                if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
+                                    Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
+                                    if(map.get("stationLocation") != null){
+                                        String stationName = map.get("stationLocation").toString();
+
+                                        DatabaseReference driverAvailabelDB = FirebaseDatabase.getInstance().getReference("driverAvailabel").child(stationName+userid);
+                                        driverAvailabelDB.removeValue();
+
+                                        DatabaseReference setWorkingDB = FirebaseDatabase.getInstance().getReference("Users").child("Driver").child(stationName+userid);
+                                        Map userInfo = new HashMap();
+
+                                        userInfo.put("working", "no");
+
+                                        setWorkingDB.updateChildren(userInfo);
+
+
+                                    }
+                                }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toasty.error(getApplicationContext(),error.getMessage(),Toasty.LENGTH_LONG).show();
+
+                        }
+                    });
+
+                }
+            }
+        });
         DatabaseReference getLocaltionDB = FirebaseDatabase.getInstance().getReference("Users").child("Driver").child(userid);
         getLocaltionDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -100,9 +179,6 @@ public class driverSetting  extends AppCompatActivity {
                         PoliceStationName =  map.get("stationLocation").toString();
 
                         mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(PoliceStationName+userid);
-
-
-                        Toast.makeText(driverSetting.this, PoliceStationName + "   hhhh", Toast.LENGTH_SHORT).show();
 
                         DatabaseReference checkingRegisteredOrNot = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(PoliceStationName+userid) ;
                         checkingRegisteredOrNot.addValueEventListener(new ValueEventListener() {
@@ -248,6 +324,63 @@ public class driverSetting  extends AppCompatActivity {
         });
 
     }
+
+    private void checkTheToggleWorkingDays() {
+//        switchCompat.setText("holyday");
+//        Toasty.success(getApplicationContext(),"It is a holyday",Toasty.LENGTH_LONG).show();
+
+        DatabaseReference makeHollydayDB = FirebaseDatabase.getInstance().getReference("Users").child("Driver").child(userid);
+        makeHollydayDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
+                    Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
+                    if(map.get("stationLocation") != null){
+                        String stationName = map.get("stationLocation").toString();
+
+                        DatabaseReference driverAvailabelDB = FirebaseDatabase.getInstance().getReference("driverAvailabel").child(stationName+userid);
+                        driverAvailabelDB.removeValue();
+
+                        DatabaseReference setWorkingDB = FirebaseDatabase.getInstance().getReference("Users").child("Driver").child(stationName+userid);
+                        setWorkingDB.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                                if(datasnapshot.exists() && datasnapshot.getChildrenCount() > 0) {
+                                    Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
+                                    if (map.get("working") != null) {
+                                        String workingText = map.get("working").toString();
+                                        if(workingText.equals("yes")){
+                                              switchCompat.setChecked(true);
+                                              switchCompat.setText("working");
+                                        }else{
+                                            switchCompat.setChecked(false);
+                                            switchCompat.setText("holyday");
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toasty.error(getApplicationContext(),error.getMessage(),Toasty.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+
     private void uploadImage() {
         if (imageURI != null) {
 
@@ -512,7 +645,7 @@ public class driverSetting  extends AppCompatActivity {
         userInfo.put("policeIDNumber", StringValuePoliceID);
         userInfo.put("NICNumber", StringValueNICnumber);
         userInfo.put("customerRiderID", "");
-
+        userInfo.put("working", "yes");
 
         mDriverDatabase.updateChildren(userInfo);
         Toasty.success(getApplicationContext(),"Updated", Toast.LENGTH_LONG, true).show();
