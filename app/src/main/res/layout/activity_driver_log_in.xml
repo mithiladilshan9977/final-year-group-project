@@ -35,10 +35,43 @@
             android:text="Officer Registration"
             android:layout_centerVertical="true"
             android:textSize="20dp"
+            android:id="@+id/officerText1"
             android:textColor="@color/white"
             android:layout_marginStart="15dp"
             />
+
+
     </RelativeLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="15dp"
+            app:cardCornerRadius="50dp"
+            android:layout_marginTop="10dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+              android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/gotosettingpagebtn"
+                android:background="@drawable/applogo" />
+        </androidx.cardview.widget.CardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     <ImageView
         android:layout_width="230dp"
         android:layout_height="230dp"

@@ -397,7 +397,6 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
                         policeStationLocation_getdata = map.get("stationLocation").toString();
 
                          assigedCustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child( policeStationLocation_getdata+driverid);
-                        Toast.makeText(getApplicationContext(), policeStationLocation_getdata+driverid + "  ididididi", Toast.LENGTH_LONG).show();
 
                         assigedCustomerRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -417,8 +416,13 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
 
                                     }
-                                    getAssigedCustomerPickLocation();
-                                    getAssigedCustomerInfo();
+
+
+                                        getAssigedCustomerPickLocation();
+
+                                        getAssigedCustomerInfo();
+
+
 
 
                                 }else{
@@ -456,7 +460,6 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
 
     private void getAssigedCustomerInfo(){
-        mcustomerinfo.setVisibility(View.VISIBLE);
         DatabaseReference  mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(customerID);
 
         mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -845,12 +848,12 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
             disconnectDriver();
         }
 
-        String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
-
-
-        GeoFire geoFireAvailable = new GeoFire(refAvailabel);
-        geoFireAvailable.removeLocation(userid);
+//        String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
+//
+//
+//        GeoFire geoFireAvailable = new GeoFire(refAvailabel);
+//        geoFireAvailable.removeLocation(userid);
 
 
 

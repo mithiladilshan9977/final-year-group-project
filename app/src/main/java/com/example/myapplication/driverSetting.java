@@ -2,9 +2,11 @@ package com.example.myapplication;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +27,9 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -37,10 +42,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
+
 
 public class driverSetting  extends AppCompatActivity {
     private EditText mnameField, mPhoneField , mCarField,mpoliceID,mnicnumber;
@@ -57,6 +64,7 @@ public class driverSetting  extends AppCompatActivity {
 
     private FirebaseUser user;
     String PoliceStationName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,33 +88,87 @@ public class driverSetting  extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         loadingDialog = new LoadingDialog(driverSetting.this);
 
-        Intent getNamePolice = getIntent();
-          PoliceStationName = getNamePolice.getStringExtra("officerPoliceStation");
-
-        Toast.makeText(getApplicationContext(), PoliceStationName+"1254"  ,Toast.LENGTH_SHORT) .show();
 
 
-        mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(PoliceStationName+userid);
-        getSaveInfor();
+        DatabaseReference getLocaltionDB = FirebaseDatabase.getInstance().getReference("Users").child("Driver").child(userid);
+        getLocaltionDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                if ( datasnapshot.exists() && datasnapshot.getChildrenCount() > 0){
+                    Map<String, Object> map = (Map<String, Object>) datasnapshot.getValue();
+                    if(map.get("stationLocation") != null){
+                        PoliceStationName =  map.get("stationLocation").toString();
 
-        String newname = "mithila dilshan";
-        if(user != null && mProfileImage != null){
-            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(newname).setPhotoUri(Uri.parse(String.valueOf(imageURI))).build();
-
-            user.updateProfile(profile).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-
+                        mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(PoliceStationName+userid);
 
 
-                    }else {
+                        Toast.makeText(driverSetting.this, PoliceStationName + "   hhhh", Toast.LENGTH_SHORT).show();
+
+                        DatabaseReference checkingRegisteredOrNot = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(PoliceStationName+userid) ;
+                        checkingRegisteredOrNot.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.hasChild("NICNumber")) {
+                                    mBack.setVisibility(View.VISIBLE);
+                                } else {
+
+                                    mBack.setVisibility(View.GONE);
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(driverSetting.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+
+
+                        getSaveInfor();
+
+                        String newname = "mithila dilshan";
+                        if(user != null && mProfileImage != null){
+                            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(newname).setPhotoUri(Uri.parse(String.valueOf(imageURI))).build();
+
+                            user.updateProfile(profile).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+
+
+
+                                    }else {
+
+
+                                    }
+                                }
+                            });
+                        }
 
 
                     }
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
@@ -123,7 +185,7 @@ public class driverSetting  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(driverSetting.this);
-                builder.setTitle("Choose option");
+                builder.setTitle("Upload image with clear face");
                 String[] options = {"Open camera" , "Open Gallery"};
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
@@ -158,8 +220,16 @@ public class driverSetting  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingDialog.stratAlertAnimation();
-                uploadImage();
-                saveUserInformation();
+
+                if(imageURI == null){
+                    loadingDialog.stopAlert();
+
+                    Toasty.error(getApplicationContext(),"Please upload Image with your face",Toasty.LENGTH_LONG).show();
+                }else{
+                    uploadImage();
+
+                }
+
 
 
             }
@@ -178,59 +248,145 @@ public class driverSetting  extends AppCompatActivity {
         });
 
     }
-
     private void uploadImage() {
-        if (imageURI != null){
-            StorageReference reference = storage.getReference().child("profile_image").child(userid);
+        if (imageURI != null) {
 
-            reference.putFile(imageURI).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toasty.error(getApplicationContext(),"Image failed to upload", Toast.LENGTH_LONG, true).show();
-
+            FaceDetector faceDetector = new FaceDetector.Builder(getApplicationContext())
+                    .setTrackingEnabled(false)
+                    .setLandmarkType(FaceDetector.ALL_LANDMARKS)
+                    .build();
 
 
-                    finish();
-                    return;
-                }
-            });
-            reference.putFile(imageURI).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
+            Bitmap imageBitmap;
+            try {
+                imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageURI);
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                return;
+            }
 
 
-                    return reference.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        //start from here
-                        Uri downloadUri = task.getResult();
-                        Map newImage = new HashMap();
-                        newImage.put("profileImageUrl" , downloadUri.toString());
-                        mDriverDatabase.updateChildren(newImage);
+            Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
+            SparseArray<Face> faces = faceDetector.detect(frame);
 
-                        Intent intent = new Intent(getApplicationContext(), DriverMapsActivity.class);
-                        intent.putExtra("policeStationName",PoliceStationName);
-                        Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
-                        startActivity(intent);
+            // Check if any faces are detected
+            if (faces.size() > 0) {
+                // Face detected in the image
+                // Continue with image upload
+//                saveUserInformation();
+                StorageReference reference = storage.getReference().child("profile_image").child(userid);
 
+                reference.putFile(imageURI)
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                loadingDialog.stopAlert();
+                                Toasty.error(getApplicationContext(),"Image failed to upload", Toast.LENGTH_LONG, true).show();
+                                finish();
+                                return;
+                            }
+                        })
+                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+                                return reference.getDownloadUrl();
+                            }
+                        })
+                        .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    // Face detected and image uploaded successfully
+                                    Uri downloadUri = task.getResult();
+                                    Map<String, Object> newImage = new HashMap<>();
+                                    newImage.put("profileImageUrl", downloadUri.toString());
+                                    mDriverDatabase.updateChildren(newImage);
 
-                        finish();
-                        return;
-                    } else {
+                                    Intent intent = new Intent(getApplicationContext(), DriverMapsActivity.class);
+                                    intent.putExtra("policeStationName",PoliceStationName);
+                                    Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    // Handle upload failure
+                                    // ...
+                                }
+                            }
+                        });
+            } else {
+                loadingDialog.stopAlert();
+   Toasty.error(getApplicationContext(),"No face detected in the image" , Toasty.LENGTH_LONG).show();
 
-                    }
-                }
-            });
-        }else   {
+                return;
+//                finish();
+            }
+
+            // Release resources
+            faceDetector.release();
+        } else {
+            // No image selected
             finish();
         }
     }
+
+
+
+//    private void uploadImage() {
+//        if (imageURI != null){
+//       StorageReference reference = storage.getReference().child("profile_image").child(userid);
+//
+//            reference.putFile(imageURI).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Toasty.error(getApplicationContext(),"Image failed to upload", Toast.LENGTH_LONG, true).show();
+//
+//
+//
+//                    finish();
+//                    return;
+//                }
+//            });
+//            reference.putFile(imageURI).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                @Override
+//                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                    if (!task.isSuccessful()) {
+//                        throw task.getException();
+//                    }
+//
+//
+//                    return reference.getDownloadUrl();
+//                }
+//            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Uri> task) {
+//                    if (task.isSuccessful()) {
+//                        //start from here
+//                        Uri downloadUri = task.getResult();
+//                        Map newImage = new HashMap();
+//                        newImage.put("profileImageUrl" , downloadUri.toString());
+//                        mDriverDatabase.updateChildren(newImage);
+//
+//                        Intent intent = new Intent(getApplicationContext(), DriverMapsActivity.class);
+//                        intent.putExtra("policeStationName",PoliceStationName);
+//                        Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
+//                        startActivity(intent);
+//
+//
+//                        finish();
+//                        return;
+//                    } else {
+//
+//                    }
+//                }
+//            });
+//        }else   {
+//            finish();
+//        }
+//    }
 
 
     private void getSaveInfor(){
@@ -291,10 +447,6 @@ public class driverSetting  extends AppCompatActivity {
     }
     private void saveUserInformation() {
 
-
-
-       DatabaseReference  getDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(userid).child("stationLocation");
-        getDriverDatabase.setValue(PoliceStationName);
         callToInsertInformation();
 
 
@@ -359,12 +511,15 @@ public class driverSetting  extends AppCompatActivity {
         userInfo.put("service", mservice);
         userInfo.put("policeIDNumber", StringValuePoliceID);
         userInfo.put("NICNumber", StringValueNICnumber);
+        userInfo.put("customerRiderID", "");
+
 
         mDriverDatabase.updateChildren(userInfo);
         Toasty.success(getApplicationContext(),"Updated", Toast.LENGTH_LONG, true).show();
-
+        loadingDialog.stopAlert();
         Intent intent = new Intent(driverSetting.this, DriverMapsActivity.class);
         intent.putExtra("policeStationName",PoliceStationName);
         startActivity(intent);
     }
+
 }

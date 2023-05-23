@@ -258,7 +258,7 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
         // endRide();
         // turn adriver avaible into driverWorking
-        DatabaseReference driverlocation = FirebaseDatabase.getInstance().getReference().child("driverWorking");
+        DatabaseReference driverlocation = FirebaseDatabase.getInstance().getReference().child("driverAvailabel");
         GeoFire geoFire = new GeoFire(driverlocation);
         geoQuery = geoFire.queryAtLocation(new GeoLocation(pickuplocation.latitude, pickuplocation.longitude), radius );
         geoQuery.removeAllListeners();
@@ -294,6 +294,8 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
                                          String customerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                          HashMap map = new HashMap();
                                          map.put("customerRiderID", customerID);
+
+
                                          map.put("destinationLat", destinationLatLng.latitude);
                                          map.put("destinationLon", destinationLatLng.longitude);
                                          driverRef.updateChildren(map);

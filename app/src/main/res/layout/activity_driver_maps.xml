@@ -66,8 +66,8 @@
 
             <ImageView
                 android:id="@+id/customerProfile"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:src="@drawable/customer_driver_prfile" />
 
@@ -83,6 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="20sp"
+                    android:layout_marginTop="10dp"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
@@ -144,6 +145,7 @@
             />
 
         <FrameLayout
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/fragment_container"

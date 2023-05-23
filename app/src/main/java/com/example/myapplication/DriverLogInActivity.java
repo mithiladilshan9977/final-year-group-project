@@ -45,7 +45,7 @@ public class DriverLogInActivity extends AppCompatActivity {
     private TextView mVeifiedEmalText;
     TextView mpoliceStationName;
     LinearLayout mregisterLinerLayout, mloginLenerLayout;
-    private ImageView mloginimage , msignupimage;
+    private ImageView mloginimage , msignupimage,mgotosettingpagebtn;
     private Spinner spinner;
     private  String dropDownValue,pilicetationName,policeStationName,pilicetationNamenew,statusOfUser;
 
@@ -71,7 +71,7 @@ public class DriverLogInActivity extends AppCompatActivity {
         mNICnumber = (EditText) findViewById(R.id.nicnumber);
         mVeifiedEmalText = (TextView) findViewById(R.id.verifiedText);
         mAuth = FirebaseAuth.getInstance();
-
+        mgotosettingpagebtn = findViewById(R.id.gotosettingpagebtn);
         mloginimage = (ImageView) findViewById(R.id.loginimage);
         msignupimage = (ImageView) findViewById(R.id.signupimage);
 
@@ -101,6 +101,22 @@ public class DriverLogInActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.drop_drop_item);
         spinner.setAdapter(adapter);
 
+        mgotosettingpagebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+                if (currentUser != null) {
+                         Intent goSettings = new Intent(getApplicationContext(), driverSetting.class);
+                         startActivity(goSettings);
+                } else {
+                     Toasty.info(getApplicationContext(),"Create an account first", Toasty.LENGTH_LONG).show();
+                     return;
+                }
+            }
+        });
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -236,6 +252,9 @@ public class DriverLogInActivity extends AppCompatActivity {
 
                             DatabaseReference curretUserNIC = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(dropDownValue+user_id) ;
 
+                            DatabaseReference addStationName = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(user_id) ;
+                            addStationName.child("stationLocation").setValue(dropDownValue);
+
 
 
                             final FirebaseUser user = mAuth.getCurrentUser();
@@ -251,6 +270,10 @@ public class DriverLogInActivity extends AppCompatActivity {
                                         editor.putString(TEXT,dropDownValue);
                                         editor.apply();
 
+                                        mEmail.setText("");
+                                        mPassword.setText("");
+                                        mReenterPassword.setText("");
+                                        mNICnumber.setText("");
 
                                         Intent intent = new Intent(DriverLogInActivity.this , driverSetting.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -328,7 +351,6 @@ public class DriverLogInActivity extends AppCompatActivity {
                                 pilicetationNamenew =  sharedPreferences.getString(TEXT , "");
 
 
-                                Toast.makeText(getApplicationContext(), pilicetationNamenew+newauth.getCurrentUser().getUid() + "     zzzzzzz", Toast.LENGTH_SHORT).show();
                                 DatabaseReference officerdatabase = database.getReference().child("Users").child("Driver").child(pilicetationNamenew+newauth.getCurrentUser().getUid());
 
                                 officerdatabase.addValueEventListener(new ValueEventListener() {
@@ -365,10 +387,6 @@ public class DriverLogInActivity extends AppCompatActivity {
 
                                     }
                                 });
-
-
-//                                    Toasty.success(getApplicationContext(),"Verified", Toast.LENGTH_LONG, true).show();
-
 
 
                             }else{
