@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -225,13 +226,41 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onClick(View v) {
 
-                     Intent intent = new Intent(getApplicationContext() , ShowUserChatPage.class);
-                     intent.putExtra("DRIVER_NAME" ,mDrivername.getText().toString() );
-                     intent.putExtra("DRIVER_PHONE" ,mDriverPhone.getText().toString() );
-                     intent.putExtra("DRIVER_FOUND_ID" , driverFoundID);
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(customerMapActivity.this);
+                builder1.setTitle("Select option");
+                String[] options = {"Open chat" , "Call now"};
+                builder1.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which ==0){
+                            Intent intent = new Intent(getApplicationContext() , ShowUserChatPage.class);
+                            intent.putExtra("DRIVER_NAME" ,mDrivername.getText().toString() );
+                            intent.putExtra("DRIVER_PHONE" ,mDriverPhone.getText().toString() );
+                            intent.putExtra("DRIVER_FOUND_ID" , driverFoundID);
 
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                     startActivity(intent);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                        if (which ==1){
+                            String phoneNumber = mDriverPhone.getText().toString();
+
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + phoneNumber));
+                            startActivity(intent);
+                        }
+
+                    }
+                });
+                AlertDialog dialog = builder1.create();
+                dialog.show();
+
+
+
+
+
+
+
+
             }
         });
 
@@ -353,6 +382,30 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("Are you sure you want to exit?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                moveTaskToBack(true) ;
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
     }
 
 

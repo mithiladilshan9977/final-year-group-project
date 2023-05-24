@@ -8,14 +8,18 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +29,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -112,10 +117,16 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     String policeStationName,policeStationLocation,stationNameWithUID,userid,policeStationLocation_getdata,staionwithdriverid;
     public  static final String SHARED_REF = "shared";
     public  static final String TEXT = "text";
+    private WindowManager windowManager;
+    private View floatingView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_maps);
+
+
+
 
         mcustomerinfo= findViewById(R.id.customerinfo);
         mCustomername= findViewById(R.id.customerName);
@@ -182,14 +193,39 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
         mCustomerPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), OfficerChatActivity.class);
-                intent.putExtra("CUSTOMER_NAME",mCustomername.getText().toString());
-                intent.putExtra("CUSTOMER_PHONE",mCustomerPhone.getText().toString());
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(DriverMapsActivity.this);
+                builder1.setTitle("Select option");
+                String[] options = {"Open chat" , "Call now"};
+                builder1.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                         if(which ==0){
+                             Intent intent = new Intent(getApplicationContext(), OfficerChatActivity.class);
+                             intent.putExtra("CUSTOMER_NAME",mCustomername.getText().toString());
+                             intent.putExtra("CUSTOMER_PHONE",mCustomerPhone.getText().toString());
 
 
 
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                             startActivity(intent);
+                         }
+                         if (which ==1){
+                             String phoneNumber = mCustomerPhone.getText().toString();
+
+                             Intent intent = new Intent(Intent.ACTION_DIAL);
+                             intent.setData(Uri.parse("tel:" + phoneNumber));
+                             startActivity(intent);
+                         }
+
+                    }
+                });
+                AlertDialog dialog = builder1.create();
+                dialog.show();
+
+
+
+
+
 
             }
         });
@@ -261,6 +297,8 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
 
+
+
 //        mSettings.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -311,12 +349,71 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onBackPressed() {
+
         if (drawer.isDrawerOpen(GravityCompat.START)){
             drawer.closeDrawer(GravityCompat.START);
-        }else {
-            super.onBackPressed();
-
         }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("Are you sure you want to exit?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              moveTaskToBack(true) ;
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+
+    private void showFloatingView() {
+
+        windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+
+
+        floatingView = LayoutInflater.from(this).inflate(R.layout.floating_view_layou, null);
+
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT
+        );
+
+
+        params.gravity = Gravity.TOP | Gravity.START;
+        params.x = 0;
+        params.y = 0;
+
+
+        windowManager.addView(floatingView, params);
+
+
+        floatingView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start the MapDriverActivity
+                Intent intent = new Intent(getApplicationContext(), DriverMapsActivity.class);
+                startActivity(intent);
+                windowManager.removeView(floatingView);
+            }
+        });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        windowManager.removeView(floatingView);
     }
 
     private Marker pickUpMaker;
@@ -353,6 +450,12 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
         mCustomerPhone.setText("");
         mCustomerProfile.setImageResource(R.mipmap.ic_launcher);
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        showFloatingView();
     }
 
     public void  recordRide(){
@@ -858,6 +961,8 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(userid);
     }
+
+
 
 
     @Override
