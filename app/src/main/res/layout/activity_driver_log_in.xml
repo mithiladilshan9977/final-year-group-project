@@ -9,228 +9,221 @@
     android:layout_width="match_parent"
     >
 
-<LinearLayout
+    <LinearLayout
 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white"
-    >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/policeStationName"
-        android:visibility="gone"
-        android:text="name"/>
-
-    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:elevation="20dp"
-        android:background="@color/brown">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/policeStationName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Officer Registration"
-            android:layout_centerVertical="true"
-            android:textSize="20dp"
-            android:id="@+id/officerText1"
-            android:textColor="@color/white"
-            android:layout_marginStart="15dp"
-            />
+            android:text="name"
+            android:visibility="gone" />
 
-
-    </RelativeLayout>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="60dp"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginRight="15dp"
-            app:cardCornerRadius="50dp"
-            android:layout_marginTop="10dp"
+            android:background="@color/brown"
+            android:elevation="20dp">
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-              android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:id="@+id/gotosettingpagebtn"
-                android:background="@drawable/applogo" />
-        </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/officerText1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:text="Officer Registration"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
 
-    <ImageView
-        android:layout_width="230dp"
-        android:layout_height="230dp"
-        android:src="@drawable/applesignup"
-        android:layout_gravity="center"
-        android:id="@+id/loginimage"
-        android:visibility="gone"
-        android:layout_marginTop="8dp"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
 
-    <ImageView
-        android:layout_width="230dp"
-        android:layout_height="230dp"
+            <androidx.cardview.widget.CardView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                app:cardCornerRadius="50dp"
 
-        android:src="@drawable/applelogin"
-        android:layout_gravity="center"
-       android:id="@+id/signupimage"
-        android:layout_marginTop="8dp"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="15dp"
-        android:visibility="gone"
-        android:id="@+id/loginLenerLayout"
-        android:orientation="vertical">
-        <EditText
+                <ImageView
+                    android:id="@+id/gotosettingpagebtn"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/applogo" />
+            </androidx.cardview.widget.CardView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <ImageView
+            android:id="@+id/loginimage"
+            android:layout_width="230dp"
+            android:layout_height="230dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/applesignup"
+            android:visibility="gone" />
+
+
+        <ImageView
+            android:id="@+id/signupimage"
+            android:layout_width="230dp"
+
+            android:layout_height="230dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/applelogin" />
+
+        <LinearLayout
+            android:id="@+id/loginLenerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email address"
-            android:textColorHint="@color/brown"
-            android:id="@+id/emailLogin"
-            android:inputType="textEmailAddress"
-            />
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <EditText
+            <EditText
+                android:id="@+id/emailLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email address"
+                android:inputType="textEmailAddress"
+                android:textColorHint="@color/brown" />
+
+            <EditText
+                android:id="@+id/passwordLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:textColorHint="@color/brown" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/registerLinerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:textColorHint="@color/brown"
-            android:id="@+id/passwordLogin"
-            android:inputType="textPassword"
-            />
+            android:layout_marginStart="15dp"
+
+            android:layout_marginEnd="15dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email address"
+                android:textColorHint="@color/brown" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:textColorHint="@color/brown" />
+
+            <EditText
+                android:id="@+id/reenterpassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter password again"
+                android:inputType="textPassword"
+                android:textColorHint="@color/brown" />
+
+            <EditText
+                android:id="@+id/nicnumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="NIC number"
+                android:inputType="number"
+                android:textColorHint="@color/brown" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="46dp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_margin="5dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/button_round"
+            android:backgroundTintMode="src_in"
+            android:elevation="5dp"
+            android:hapticFeedbackEnabled="true"
+            android:text="Register"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_margin="5dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/button_round"
+            android:elevation="5dp"
+            android:text="Log in"
+            android:textColor="@color/white" />
+
+
+        <Button
+            android:id="@+id/goback"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_margin="5dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/button_round"
+
+            android:elevation="5dp"
+            android:text="Go back"
+            android:textColor="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/verifiedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Verfiedddd"
+                android:textSize="15dp"
+                android:visibility="gone" />
+        </LinearLayout>
 
 
     </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-
-        android:id="@+id/registerLinerLayout"
-        android:orientation="vertical">
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email address"
-        android:textColorHint="@color/brown"
-        android:id="@+id/email"
-        />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:textColorHint="@color/brown"
-        android:id="@+id/password"
-        android:inputType="textPassword"
-        />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter password again"
-        android:id="@+id/reenterpassword"
-        android:textColorHint="@color/brown"
-        android:inputType="textPassword"
-        />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="NIC number"
-        android:id="@+id/nicnumber"
-        android:textColorHint="@color/brown"
-        android:inputType="number"
-        />
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:id="@+id/spinner"
-            />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_margin="5dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginEnd="15dp"
-        android:background="@drawable/button_round"
-        android:backgroundTintMode="src_in"
-        android:elevation="5dp"
-        android:hapticFeedbackEnabled="true"
-        android:text="Register"
-        android:textColor="@color/white" />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:text="Log in"
-        android:layout_margin="5dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:background="@drawable/button_round"
-        android:elevation="5dp"
-        android:textColor="@color/white"
-        android:id="@+id/loginButton"/>
-
-
-    <Button
-        android:id="@+id/goback"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="@drawable/button_round"
-        android:layout_margin="5dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-
-        android:elevation="5dp"
-        android:text="Go back"
-        android:textColor="@color/white" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="80dp"
-        >
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Verfiedddd"
-            android:visibility="gone"
-            android:textSize="15dp"
-            android:id="@+id/verifiedText"
-            android:layout_marginTop="10dp"
-            />
-    </LinearLayout>
-
-
-
-</LinearLayout>
 </ScrollView>

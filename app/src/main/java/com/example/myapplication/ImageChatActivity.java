@@ -1,9 +1,10 @@
 package com.example.myapplication;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -37,19 +39,21 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 
 public class ImageChatActivity extends AppCompatActivity {
-private Button mopengallary,msendimage;
+
+    FloatingActionButton mopengallary,msendimage;
     Uri imageURI,downloadUri;
     DatabaseReference db,mCustomerDatabase,mDriverDatabase;
     String uid,DriverFoundId;
 
     StorageReference reference;
     FirebaseStorage storage;
-    ImageView mProfileImage;
+    ImageView mProfileImage,mgoBackArrow;
     FirebaseUser user;
     FirebaseAuth auth;
 
     RecycleViewAdapter adapter;
-    ArrayList<Message> list;
+    ArrayList<ImageClass> list;
+    ArrayList<ImageClass> imageUris ;
     private List<String> imageList;
     ImageViewAdapter imageViewAdapter;
     RecyclerView recyclerView;
@@ -71,18 +75,35 @@ private Button mopengallary,msendimage;
         uid= user.getUid();
         recyclerView = findViewById(R.id.recycleview);
         list = new ArrayList<>();
-
+        mgoBackArrow = findViewById(R.id.goBackArrow);
 
         //image load code
+        imageList = new ArrayList<>(); // Initialize the imageList
         imageViewAdapter = new ImageViewAdapter(this, imageList);
-        LinearLayoutManager llmanager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
+        LinearLayoutManager llmanager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(llmanager);
         recyclerView.setAdapter(imageViewAdapter);
+
+
+        mgoBackArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext() , customerMapActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+
 
         Toast.makeText(getApplicationContext(), DriverFoundId, Toast.LENGTH_LONG).show();
         mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Messages").child(DriverFoundId).child(uid);
 
         String newname = "mithila dilshan";
+        mProfileImage.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+
         if(user != null && mProfileImage != null){
             UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder().setDisplayName(newname).setPhotoUri(Uri.parse(String.valueOf(imageURI))).build();
 
@@ -106,6 +127,9 @@ private Button mopengallary,msendimage;
             @Override
             public void onActivityResult(Uri result) {
                 if(result != null){
+                    mProfileImage.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+
                     mProfileImage.setImageURI(result);
                     imageURI = result;
                 }
@@ -116,6 +140,8 @@ private Button mopengallary,msendimage;
             @Override
             public void onClick(View v) {
                 mGetContent.launch("image/*");
+                mProfileImage.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
 
             }
         });
@@ -133,12 +159,20 @@ private Button mopengallary,msendimage;
 
     private void uploadImage() {
         if (imageURI != null){
+            mProfileImage.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+
+            ProgressDialog progressDialog = new ProgressDialog(ImageChatActivity.this);
+            progressDialog.setMessage("Uploading image...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
 
             reference = storage.getReference().child("profile_image_chat").child(uid);
 
             reference.putFile(imageURI).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
                     Toasty.error(getApplicationContext(),"Image failed to upload", Toast.LENGTH_LONG, true).show();
 
 
@@ -151,7 +185,7 @@ private Button mopengallary,msendimage;
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
-
+                        progressDialog.dismiss();
                         throw task.getException();
                     }
 
@@ -163,13 +197,15 @@ private Button mopengallary,msendimage;
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         //start from here
-
+                        progressDialog.dismiss();
                         downloadUri = task.getResult();
 
                         db.child("Messages").child(DriverFoundId).child("image").push().setValue(new ImageClass(downloadUri.toString())).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+
                                 Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
+                             finish();
 
                             }
                         });
@@ -204,28 +240,27 @@ private Button mopengallary,msendimage;
     }
     private void loadImages() {
 
-        db.child("Messages").child(DriverFoundId).child("image").addValueEventListener(new ValueEventListener() {
+        db.child("Messages").child("KBG6TSwPmqe4ZAIuTfaBTKEdVRr2").child("image").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
-                    if(imageList != null){
-                        Toasty.success(getApplicationContext(),"not null", Toast.LENGTH_LONG, true).show();
 
-                        imageList.clear();
-                        for (DataSnapshot snap: snapshot.getChildren())
-                        {
-                            ImageClass imageClass = snap.getValue(ImageClass.class);
-                            imageList.add(String.valueOf(imageClass));
-                            imageViewAdapter.notifyDataSetChanged();
 
+                    List<String> imageUris = new ArrayList<>();
+
+                    for (DataSnapshot snap : snapshot.getChildren()) {
+                        ImageClass imageClass = snap.getValue(ImageClass.class);
+                        if (imageClass != null) {
+                            String imageUri = imageClass.getmProfile();
+                            imageUris.add(imageUri);
                         }
-
-                    }else{
-                        Toasty.success(getApplicationContext(),"  null", Toast.LENGTH_LONG, true).show();
-
                     }
 
+                    imageList.clear(); // Clear the existing imageList
+                    imageList.addAll(imageUris); // Update the imageList with the new data
 
+                    // Notify the adapter that the data has changed
+                    imageViewAdapter.notifyDataSetChanged();
 
                 }
 

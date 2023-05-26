@@ -2,11 +2,14 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -707,7 +710,20 @@ private  DatabaseReference drivehasendedRef;
         }
         googleMap.setMyLocationEnabled(true);
 
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String provider = locationManager.getBestProvider(criteria, true);
+        Location location = locationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        }
 
+// Set the map type to "Drive" mode
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        googleMap.setTrafficEnabled(true);
+        googleMap.setBuildingsEnabled(true);
+        googleMap.setIndoorEnabled(true);
     }
 
     private void checkGPS() {

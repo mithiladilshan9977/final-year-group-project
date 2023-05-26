@@ -2,11 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="200dp"
-    android:background="@drawable/common_google_signin_btn_icon_dark"
+    android:background="@drawable/button_round"
     android:padding="16dp"
     android:elevation="8dp"
     android:translationZ="8dp">
-
+      <ImageView
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:background="@mipmap/ic_launcher"
+          android:id="@+id/imageicon"
+          />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go Home"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_below="@+id/imageicon"
+        />
 
 
 

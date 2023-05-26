@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 public class ImageClass   {
     String mProfile;
+
     public ImageClass() {
 
     }

@@ -9,6 +9,9 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +21,7 @@ import android.provider.Settings;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -57,6 +61,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.Priority;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -375,12 +380,9 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void showFloatingView() {
-
         windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
-
         floatingView = LayoutInflater.from(this).inflate(R.layout.floating_view_layou, null);
-
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -390,24 +392,66 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
                 PixelFormat.TRANSLUCENT
         );
 
-
         params.gravity = Gravity.TOP | Gravity.START;
         params.x = 0;
         params.y = 0;
 
-
         windowManager.addView(floatingView, params);
 
+        final float[] initialTouchX = new float[1];
+        final float[] initialTouchY = new float[1];
+        final float touchThreshold = 5f; // Adjust the threshold value as needed
 
         floatingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Start the MapDriverActivity
                 Intent intent = new Intent(getApplicationContext(), DriverMapsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Add this flag to start activity outside of the current task
                 startActivity(intent);
                 windowManager.removeView(floatingView);
             }
         });
+
+        floatingView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        initialTouchX[0] = event.getRawX();
+                        initialTouchY[0] = event.getRawY();
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        float dx = event.getRawX() - initialTouchX[0];
+                        float dy = event.getRawY() - initialTouchY[0];
+                        // Calculate the new position based on the touch movement
+                        params.x += dx;
+                        params.y += dy;
+                        // Update the floating view position
+                        windowManager.updateViewLayout(floatingView, params);
+                        // Check if the movement exceeds the touch threshold
+                        if (Math.abs(dx) > touchThreshold || Math.abs(dy) > touchThreshold) {
+                            // Movement detected, cancel the click event
+                            floatingView.setOnClickListener(null);
+                        }
+                        // Update the initial touch position for the next movement
+                        initialTouchX[0] = event.getRawX();
+                        initialTouchY[0] = event.getRawY();
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        // Handle the click event when finger is released
+                        if (Math.abs(event.getRawX() - initialTouchX[0]) <= touchThreshold &&
+                                Math.abs(event.getRawY() - initialTouchY[0]) <= touchThreshold) {
+                            // Click event detected within the touch threshold, open the activity
+                            floatingView.performClick();
+                        }
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
     }
 
     @Override
@@ -762,7 +806,6 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
-
 //        getCurrentLocationUpdate();
 //        LatLng latLng = new LatLng(0, 0);
 //        MarkerOptions markerOptions = new MarkerOptions();
@@ -785,6 +828,22 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
             return;
         }
         googleMap.setMyLocationEnabled(true);
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String provider = locationManager.getBestProvider(criteria, true);
+        Location location = locationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        }
+
+// Set the map type to "Drive" mode
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        googleMap.setTrafficEnabled(true);
+        googleMap.setBuildingsEnabled(true);
+        googleMap.setIndoorEnabled(true);
+
 
 
     }
@@ -971,12 +1030,21 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
             disconnectDriver();
         }
 
-//        String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//        DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
-//
-//
-//        GeoFire geoFireAvailable = new GeoFire(refAvailabel);
-//        geoFireAvailable.removeLocation(userid);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        //added this is condition to check
+        if (currentUser != null) {
+            String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference refAvailabel = FirebaseDatabase.getInstance().getReference("driverAvailabel");
+
+
+            GeoFire geoFireAvailable = new GeoFire(refAvailabel);
+            geoFireAvailable.removeLocation(userid);
+        } else {
+            return;
+        }
+
+
 
 
 
