@@ -49,6 +49,12 @@
         android:orientation="vertical"
         android:padding="10dp"
         >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/brown"
+            android:text="These are the information that seen by the officer. Provide right information"
+            />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

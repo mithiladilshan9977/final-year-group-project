@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ public class HistoryActivity extends AppCompatActivity {
    private String customerOrDriverHere , userid,historyDriverPhone,historyDriverName,historyDriverDisprition;
    private TextView mnoHistoryText;
    private NestedScrollView mnestedScrollView;
+   private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,7 @@ public class HistoryActivity extends AppCompatActivity {
         mHistoryRecycelView.setLayoutManager(mHistoryLayoutManager);
         mHistoryAdapter =new HistoryAdapter(getdatasethistory() , HistoryActivity.this);
         mHistoryRecycelView.setAdapter(mHistoryAdapter);
-
+        progressBar = findViewById(R.id.progressBar);
         customerOrDriverHere = getIntent().getExtras().getString("customerOrDriver");
 
         userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -76,6 +78,7 @@ public class HistoryActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                          if (datasnapshot.exists()){
                              for (DataSnapshot driverinfor: datasnapshot.getChildren() ){
+                                 progressBar.setVisibility(View.GONE);
                                      historyDriverName = driverinfor.child("driverName").getValue().toString();
                                      historyDriverPhone = driverinfor.child("driverPhone").getValue().toString();
                                      historyDriverDisprition = driverinfor.child("driverDiscription").getValue().toString();
@@ -95,7 +98,7 @@ public class HistoryActivity extends AppCompatActivity {
                              mnoHistoryText.setVisibility(View.VISIBLE);
                              mhistoryimage.setVisibility(View.VISIBLE);
                              mnestedScrollView.setVisibility(View.GONE);
-
+                             progressBar.setVisibility(View.VISIBLE);
 
                          }
             }

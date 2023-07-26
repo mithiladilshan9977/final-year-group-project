@@ -4,7 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
+    android:elevation="50dp"
+    android:background="@color/very_low_color_brown"
+
     >
+
+
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -90,6 +96,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/profileHolder"
+        android:visibility="gone"
         android:layout_below="@+id/discriptionHolder"
         >
         <TextView

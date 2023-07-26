@@ -124,6 +124,7 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     public  static final String TEXT = "text";
     private WindowManager windowManager;
     private View floatingView;
+    private boolean isFloatingViewShown = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -205,6 +206,7 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                          if(which ==0){
+                             isFloatingViewShown = false;
                              Intent intent = new Intent(getApplicationContext(), OfficerChatActivity.class);
                              intent.putExtra("CUSTOMER_NAME",mCustomername.getText().toString());
                              intent.putExtra("CUSTOMER_PHONE",mCustomerPhone.getText().toString());
@@ -457,7 +459,16 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onRestart() {
         super.onRestart();
-        windowManager.removeView(floatingView);
+        if (isFloatingViewShown) {
+            removeFloatingView();
+        }
+    }
+
+    private void removeFloatingView() {
+        if (isFloatingViewShown && floatingView != null && windowManager != null) {
+            windowManager.removeView(floatingView);
+            isFloatingViewShown = false; // Reset the flag when the floating view is removed
+        }
     }
 
     private Marker pickUpMaker;
@@ -499,8 +510,10 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onPause() {
         super.onPause();
-        showFloatingView();
+
     }
+
+
 
     public void  recordRide(){
         String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -1026,6 +1039,11 @@ public class DriverMapsActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     protected void onStop() {
+
+        if (isFloatingViewShown) {
+            showFloatingView();
+        }
+
         if(!isLoggingOut){
             disconnectDriver();
         }

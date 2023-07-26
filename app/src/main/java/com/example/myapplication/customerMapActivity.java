@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -413,6 +414,14 @@ public class customerMapActivity extends AppCompatActivity implements OnMapReady
 
 
     private void gerDriverInfo(){
+
+
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            // Vibrate for 500 milliseconds (0.5 seconds)
+            vibrator.vibrate(500);
+        }
+
 
         mediaPlayer.start();
         putIntoHistoryPage();

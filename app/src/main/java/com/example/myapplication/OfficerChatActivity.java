@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +37,7 @@ public class OfficerChatActivity extends AppCompatActivity {
     private ImageView mgoBackArrow;
     Message message;
     NotificationHelper notificationHelper;
+    FloatingActionButton  mgototheimagechat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class OfficerChatActivity extends AppCompatActivity {
         mcustomerName = (TextView) findViewById(R.id.customerName);
         mcustomerPhone = (TextView) findViewById(R.id.customerPhone);
         mgoBackArrow = (ImageView) findViewById(R.id.goBackArrow);
+        mgototheimagechat = findViewById(R.id.opengallary) ;
 
         adapter = new RecycleViewAdapter(this, list);
         LinearLayoutManager llm = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
@@ -59,6 +62,7 @@ public class OfficerChatActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         notificationHelper = new NotificationHelper(this);
+
 
 
 
@@ -74,6 +78,17 @@ public class OfficerChatActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), DriverMapsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+            }
+        });
+
+        mgototheimagechat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(getApplicationContext(),officerimagechat_activity.class);
+                intent1.putExtra("CUSTOMER_NAME", customerName);
+                intent1.putExtra("CUSTOMER_PHONE", customerPhone);
+
+                startActivity(intent1);
             }
         });
 
@@ -105,7 +120,7 @@ public class OfficerChatActivity extends AppCompatActivity {
 
                                                  for (DataSnapshot snap:snapshot.getChildren()){
                                                      message = snap.getValue(Message.class);
-                                                     notificationHelper.sendHighProrityNotification(customerName,message.getMessage(), DriverMapsActivity.class);
+                                                     notificationHelper.sendHighProrityNotification(customerName,message.getMessage(), OfficerChatActivity.class);
 
                                                      list.add(message);
                                                      adapter.notifyDataSetChanged();

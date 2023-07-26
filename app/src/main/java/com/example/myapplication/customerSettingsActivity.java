@@ -173,7 +173,7 @@ public class customerSettingsActivity extends AppCompatActivity {
 
 
 
-                    finish();
+
                     return;
                 }
             });
@@ -198,7 +198,7 @@ public class customerSettingsActivity extends AppCompatActivity {
                         mCustomerDatabase.updateChildren(newImage);
                         Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
 
-                         finish();
+
                         return;
                     } else {
 
@@ -206,7 +206,7 @@ public class customerSettingsActivity extends AppCompatActivity {
                 }
             });
         }else   {
-            finish();
+
         }
     }
 
@@ -250,12 +250,28 @@ public class customerSettingsActivity extends AppCompatActivity {
             loadingDialog.stopAlert();
             return;
         }
+        if (mName.matches(".*[0-9!@#$%^&*()].*")) {
+            mnameField.setError("Name cannot contain numbers or symbols");
+            mnameField.requestFocus();
+            loadingDialog.stopAlert();
+            Toasty.error(getApplicationContext(),"Invalid name", Toasty.LENGTH_LONG).show();
+            return;
+        }
+
         if(mPhone.isEmpty()){
             mPhoneField.setError("Enter your phone number");
             mPhoneField.requestFocus();
             loadingDialog.stopAlert();
             return;
         }
+        if (mPhone.length() != 10) {
+            mPhoneField.setError("Phone number must have exactly 10 digits");
+            mPhoneField.requestFocus();
+            loadingDialog.stopAlert();
+            Toasty.error(getApplicationContext(),"Invalid phone number", Toasty.LENGTH_LONG).show();
+            return;
+        }
+
 
            Map userInfo = new HashMap();
            userInfo.put("name", mName);
@@ -270,6 +286,6 @@ public class customerSettingsActivity extends AppCompatActivity {
                    }
                }
            });
-          finish();
+
     }
 }

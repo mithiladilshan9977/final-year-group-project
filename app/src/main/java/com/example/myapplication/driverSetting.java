@@ -416,7 +416,7 @@ public class driverSetting  extends AppCompatActivity {
                             public void onFailure(@NonNull Exception e) {
                                 loadingDialog.stopAlert();
                                 Toasty.error(getApplicationContext(),"Image failed to upload", Toast.LENGTH_LONG, true).show();
-                                finish();
+
                                 return;
                             }
                         })
@@ -443,7 +443,7 @@ public class driverSetting  extends AppCompatActivity {
                                     intent.putExtra("policeStationName",PoliceStationName);
                                     Toasty.success(getApplicationContext(),"Image uploaded", Toast.LENGTH_LONG, true).show();
                                     startActivity(intent);
-                                    finish();
+
                                 } else {
                                     // Handle upload failure
                                     // ...
@@ -605,12 +605,28 @@ public class driverSetting  extends AppCompatActivity {
             loadingDialog.stopAlert();
             return;
         }
+        if (mName.matches(".*[0-9!@#$%^&*()].*")) {
+            mnameField.setError("Name cannot contain numbers or symbols");
+            mnameField.requestFocus();
+            loadingDialog.stopAlert();
+            Toasty.error(getApplicationContext(),"Invalid name", Toasty.LENGTH_LONG).show();
+            return;
+        }
+
         if(mPhone.isEmpty()){
             mPhoneField.setError("Enter your phone number");
             mPhoneField.requestFocus();
             loadingDialog.stopAlert();
             return;
         }
+        if (mPhone.length() != 10) {
+            mPhoneField.setError("Phone number must have exactly 10 digits");
+            mPhoneField.requestFocus();
+            loadingDialog.stopAlert();
+            Toasty.error(getApplicationContext(),"Invalid phone number", Toasty.LENGTH_LONG).show();
+            return;
+        }
+
         if(mCar.isEmpty()){
             mCarField.setError("Type your description");
             mCarField.requestFocus();

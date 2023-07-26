@@ -4,7 +4,7 @@ public class Message {
     private String userEmail;
     private String message;
     private String dateTime;
-    String mProfile;
+
 
     public Message() {
 

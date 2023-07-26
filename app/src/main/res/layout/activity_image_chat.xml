@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+  android:background="@drawable/chatbackgroundpng"
+    android:layout_centerVertical="true"
+    android:layout_centerHorizontal="true"
     tools:context=".ImageChatActivity">
 
     <RelativeLayout
@@ -38,6 +40,15 @@
             android:textColor="@color/white"
             android:textSize="20dp" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:id="@+id/movedown"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+           android:layout_marginEnd="10dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/sendimage" />
+
 
     </RelativeLayout>
 
@@ -54,6 +65,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/aboverelativeview" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleview"
@@ -73,7 +94,7 @@
         android:id="@+id/opengallary"
           android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
-         android:src="@mipmap/carnew_ic_launcher"
+         android:src="@mipmap/sendimage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -81,7 +102,7 @@
         android:id="@+id/sendimage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/carnew_ic_launcher"
+        android:src="@mipmap/realsendbtnimage"
         android:backgroundTint="@color/low_color_brown"
         android:layout_marginBottom="10dp"
         android:layout_marginStart="10dp"

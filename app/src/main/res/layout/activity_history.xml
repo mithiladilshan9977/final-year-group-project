@@ -8,6 +8,17 @@
     android:background="@color/white"
     tools:context=".HistoryActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+       android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout2"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:layout_width="250dp"
         android:layout_height="250dp"
@@ -61,23 +72,26 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
+        <!--        android:visibility="gone"-->
+
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="60dp"
-            android:visibility="gone"
-            android:id="@+id/nestedScrollView"
-            >
+            android:padding="5dp">
+
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/historyRecyCleViewXML"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
 
-                android:id="@+id/historyRecyCleViewXML"
+                android:scrollbars="vertical"
 
                 >
 

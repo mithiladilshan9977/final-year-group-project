@@ -18,6 +18,18 @@ public class ImageViewAdapter extends RecyclerView.Adapter<ImageViewAdapter.Imag
 
     private Context context;
     private List<String> imageUris;
+    private OnImageClickListener onImageClickListener;
+
+    public void setOnImageClickListener(OnImageClickListener listener) {
+        this.onImageClickListener = listener;
+    }
+
+    // ... Other existing code ...
+
+    public interface OnImageClickListener {
+        void onImageClick(String imageUri);
+    }
+
 
 
 
@@ -86,6 +98,19 @@ public class ImageViewAdapter extends RecyclerView.Adapter<ImageViewAdapter.Imag
 
             imageView = itemView.findViewById(R.id.sent_image);
             textView = itemView.findViewById(R.id.image_text);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onImageClickListener != null){
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            String imageUri = imageUris.get(position);
+                            onImageClickListener.onImageClick(imageUri);
+                        }
+                    }
+                }
+            });
 
 
 

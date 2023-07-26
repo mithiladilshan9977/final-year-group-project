@@ -74,6 +74,9 @@ dependencies {
     //detecting face
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
 
+    //enabeling image zoom in and out
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
 
 
 }

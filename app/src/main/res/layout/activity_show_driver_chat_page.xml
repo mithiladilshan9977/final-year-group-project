@@ -5,8 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+
+    android:background="@drawable/chatbackgroundpng"
+
     tools:context=".ShowUserChatPage">
+
+    <RelativeLayout
+        android:id="@+id/imageprevisrelativelayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/message"
+
+        app:layout_constraintEnd_toEndOf="parent"
+     android:layout_marginBottom="18dp"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/profileImagee"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/very_low_color_brown"
+            android:padding="10dp"
+            android:src="@drawable/applogo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/sendimage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileImagee"
+            android:layout_centerHorizontal="true"
+            android:background="@color/brown"
+            android:text="send"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
@@ -48,11 +87,7 @@
             android:textSize="17sp" />
 
     </RelativeLayout>
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/applogo"
-        android:id="@+id/profileImage"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleview"
@@ -63,6 +98,47 @@
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="20dp"
+
+        android:gravity="center"
+        android:background="@drawable/button_round"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:id="@+id/showtheaudiorecoringui"
+        app:layout_constraintBottom_toBottomOf="@+id/recycleview"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+
+        <ImageView
+            android:id="@+id/recordStatusIcon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/micicon" />
+
+        <TextView
+            android:id="@+id/recordStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+              android:layout_below="@id/recordStatusIcon"
+            android:layout_centerHorizontal="true"
+            android:text="Recording..."
+            android:textColor="@android:color/white"
+            android:textSize="26sp" />
+
+        <ImageButton
+            android:id="@+id/recordPauseButton"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/recordStatusText"
+            android:background="@android:color/transparent"
+            android:src="@drawable/cam_send" />
+
+    </RelativeLayout>
 
     <ImageView
         android:layout_width="40dp"
@@ -71,42 +147,67 @@
         android:id="@+id/cam_SendMessage"
          android:layout_margin="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/message"
+
         app:layout_constraintBottom_toBottomOf="parent"
         />
- <com.google.android.material.textfield.TextInputLayout
-     android:layout_width="0dp"
-     android:id="@+id/message"
-     android:layout_height="wrap_content"
-     app:layout_constraintEnd_toStartOf="@+id/fab_send"
-     app:layout_constraintStart_toStartOf="@id/cam_SendMessage"
-     app:layout_constraintBottom_toBottomOf="parent"
-     app:boxBackgroundColor="@color/white"
-     android:paddingStart="10dp"
-     android:hint="Type message here"
-     >
-     <com.google.android.material.textfield.TextInputEditText
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         >
 
-     </com.google.android.material.textfield.TextInputEditText>
- </com.google.android.material.textfield.TextInputLayout>
+
+
+
+    <EditText
+        android:layout_width="0dp"
+        android:id="@+id/message"
+        android:layout_height="wrap_content"
+
+        android:hint="Type your message"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/main2space"
+        app:layout_constraintStart_toEndOf="@id/cam_SendMessage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/white"
+        />
+
+<Space
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/main2space"
+    android:layout_margin="7dp"
+    app:layout_constraintStart_toEndOf="@+id/message"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/messgesend"
         android:id="@+id/fab_send"
-     android:layout_marginEnd="30dp"
+      android:visibility="gone"
+       android:layout_margin="2dp"
         app:layout_constraintStart_toEndOf="@+id/message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/micicon"
+        android:layout_margin="2dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/send_audio"
+        />
+
+
+
+
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="s"
+        android:visibility="gone"
         android:id="@+id/send_poto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
