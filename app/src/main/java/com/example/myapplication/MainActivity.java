@@ -29,6 +29,21 @@ private TextView mopenEmail, mcustomerText, moficcerText ;
 
 private ImageView mmainimage;
 
+private LinearLayout gradianColor;
+
+private ImageView mainimage;
+
+private TextView headingtext;
+
+private ImageButton customer;
+
+private ImageButton driver;
+private LinearLayout holder;
+private TextView customertext;
+private TextView officertext;
+private TextView openEmail;
+
+
 private FirebaseAuth mAuth;
 String pilicetationName;
 
@@ -59,6 +74,15 @@ String pilicetationName;
         mcustomerText = (TextView) findViewById(R.id.customertext) ;
         moficcerText = (TextView) findViewById(R.id.officertext) ;
         mgotoimagechat = (Button) findViewById(R.id.gotoimagechat);
+        gradianColor = (LinearLayout) findViewById(R.id.gradianColor);
+        mainimage = (ImageView) findViewById(R.id.mainimage);
+        headingtext = (TextView) findViewById(R.id.headingtext);
+        customer = (ImageButton) findViewById(R.id.customer);
+        driver = (ImageButton) findViewById(R.id.driver);
+        holder = (LinearLayout) findViewById(R.id.holder);
+        customertext = (TextView) findViewById(R.id.customertext);
+        officertext = (TextView) findViewById(R.id.officertext);
+        openEmail = (TextView) findViewById(R.id.openEmail);
 
         YoYo.with(Techniques.FadeInLeft).duration(1500).playOn(mcustomer);
         YoYo.with(Techniques.FadeInRight).duration(1500).playOn(mDriver);
@@ -102,9 +126,18 @@ String pilicetationName;
 
        if(!is_Connected()){
            noInterConnection.setVisibility(View.VISIBLE);
+           gradianColor.setVisibility(View.GONE);
+           mainimage.setVisibility(View.GONE);
+           headingtext.setVisibility(View.GONE);
+           customer.setVisibility(View.GONE);
            mcustomer.setVisibility(View.GONE);
            mDriver.setVisibility(View.GONE);
            mmainimage.setVisibility(View.GONE);
+           driver.setVisibility(View.GONE);
+           holder.setVisibility(View.GONE);
+           customertext.setVisibility(View.GONE);
+           officertext.setVisibility(View.GONE);
+           openEmail.setVisibility(View.GONE);
            mcustomerText.setVisibility(View.GONE);
            moficcerText.setVisibility(View.GONE);
            mopenEmail.setVisibility(View.GONE);
@@ -112,6 +145,15 @@ String pilicetationName;
 
        }else{
            noInterConnection.setVisibility(View.GONE);
+           gradianColor.setVisibility(View.VISIBLE);
+           mainimage.setVisibility(View.VISIBLE);
+           headingtext.setVisibility(View.VISIBLE);
+           customer.setVisibility(View.VISIBLE);
+           driver.setVisibility(View.VISIBLE);
+           holder.setVisibility(View.VISIBLE);
+           customertext.setVisibility(View.VISIBLE);
+           officertext.setVisibility(View.VISIBLE);
+           openEmail.setVisibility(View.VISIBLE);
            mcustomer.setVisibility(View.VISIBLE);
            mDriver.setVisibility(View.VISIBLE);
            mmainimage.setVisibility(View.VISIBLE);
