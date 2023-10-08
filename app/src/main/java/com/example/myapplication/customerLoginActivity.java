@@ -108,66 +108,47 @@ public class customerLoginActivity extends AppCompatActivity {
                 mregisterLinerLayout.setVisibility(View.VISIBLE);
                 mloginLenerLayout.setVisibility(View.GONE);
 
-                //images
+                // Images
                 mloginimage.setVisibility(View.VISIBLE);
                 msignupimage.setVisibility(View.GONE);
-
 
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 final String reenterpassword = mReenterPassword.getText().toString();
-                final String  nicNumber = mNICnumber.getText().toString();
+                final String nicNumber = mNICnumber.getText().toString();
 
+                if (email.isEmpty()) {
+                    mEmail.setError("Please enter Email");
+                    mEmail.requestFocus();
+                    return;
+                }
 
-                if(email.isEmpty()){
-                     mEmail.setError("Please enter Email");
-                     mEmail.requestFocus();
-                     return;
-                }
-                if (password.isEmpty()){
-                    mPassword.setError("Enter Strong password");
-                    mPassword.requestFocus();
-                    return;
-                }
-                if(reenterpassword.isEmpty()){
-                    mReenterPassword.setError("Reenter your password");
-                    mReenterPassword.requestFocus();
-                    return;
-                }
-                if (password.length() <=5 ){
-                    mPassword.setError("Passwod is too short");
-                    mPassword.requestFocus();
-                    return;
-                }
-                if (!isPasswordStrong(password)) {
+                // Check password strength using PasswordStrengthMeter
+                if (passwordStrengthMeter.getPasswordStrength() != PasswordStrengthMeter.Strong) {
                     mPassword.setError("Password must be strong (e.g., at least 8 characters, containing uppercase, lowercase, digit, and special character)");
                     mPassword.requestFocus();
                     return;
                 }
-                if (password.length() != reenterpassword.length()){
-                    mReenterPassword.setError("Password are not matching");
+
+                if (!password.equals(reenterpassword)) {
+                    mReenterPassword.setError("Passwords do not match");
                     mReenterPassword.requestFocus();
                     return;
                 }
 
-                if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     mEmail.setError("Invalid Email address");
                     mEmail.requestFocus();
                     return;
                 }
-                if(password.length() == reenterpassword.length() && Patterns.EMAIL_ADDRESS.matcher(email).matches()){
 
-                    loadingDialog.stratAlertAnimation();
-
-                }
+                // Continue with registration
+                loadingDialog.stratAlertAnimation();
                 mAuth.createUserWithEmailAndPassword(email, password)
-                        //tesing done by nuwan
-
                         .addOnCompleteListener(customerLoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (!task.isSuccessful()) {
-                                    print("goood");
                                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                         loadingDialog.stopAlert();
                                         Toasty.error(getApplicationContext(), "You are already registered", Toast.LENGTH_LONG, true).show();
@@ -184,11 +165,13 @@ public class customerLoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
+                                                print("yex");
                                                 Toasty.success(getApplicationContext(), "Email has been sent", Toast.LENGTH_LONG, true).show();
                                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 startActivity(intent);
                                             } else {
+                                                print("email is not sent");
                                                 Toasty.error(getApplicationContext(), "Email not sent", Toast.LENGTH_LONG, true).show();
                                             }
                                         }
@@ -198,9 +181,9 @@ public class customerLoginActivity extends AppCompatActivity {
                                 }
                             }
                         });
-
             }
         });
+
 
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
