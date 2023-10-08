@@ -71,7 +71,7 @@ public class customerLoginActivity extends AppCompatActivity {
 
         mregisterLinerLayout.setVisibility(View.VISIBLE);
         mloginLenerLayout.setVisibility(View.GONE);
- 
+
 
 
 
@@ -136,6 +136,11 @@ public class customerLoginActivity extends AppCompatActivity {
                 }
                 if (password.length() <=5 ){
                     mPassword.setError("Passwod is too short");
+                    mPassword.requestFocus();
+                    return;
+                }
+                if (!isPasswordStrong(password)) {
+                    mPassword.setError("Password must be strong (e.g., at least 8 characters, containing uppercase, lowercase, digit, and special character)");
                     mPassword.requestFocus();
                     return;
                 }
