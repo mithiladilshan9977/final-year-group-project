@@ -160,13 +160,13 @@ public class DriverLogInActivity extends AppCompatActivity {
                 mLoginImage.setVisibility(View.VISIBLE);
                 mSignupImage.setVisibility(View.GONE);
 
-                final String email = mEmail.getText().toString();
+                final String emailaddress = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 final String reenterPassword = mReenterPassword.getText().toString();
                 final String nicNumber = mNICnumber.getText().toString();
                 final String policeStation = dropDownValue.toString();
 
-                if (email.isEmpty()) {
+                if (emailaddress.isEmpty()) {
                     mEmail.setError("Please enter Email");
                     mEmail.requestFocus();
                     return;
@@ -204,54 +204,56 @@ public class DriverLogInActivity extends AppCompatActivity {
                     loadingDialog.startAlertAnimation();
                 }
 
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(DriverLogInActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                loadingDialog.stopAlert();
-                                Toasty.error(getApplicationContext(), "You are already registered", Toast.LENGTH_LONG, true).show();
-                                return;
-                            } else {
-                                Toasty.error(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG, true).show();
-                            }
-                            Toasty.error(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG, true).show();
-                        } else {
-                            String user_id = mAuth.getCurrentUser().getUid();
-                            DatabaseReference currnt_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(dropDownValue + user_id).child("email");
-                            DatabaseReference curretUserNIC = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(dropDownValue + user_id);
-                            DatabaseReference addStationName = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(user_id);
-                            addStationName.child("stationLocation").setValue(dropDownValue);
-
-                            final FirebaseUser user = mAuth.getCurrentUser();
-                            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(DriverLogInActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (!task.isSuccessful()) {
+                                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                         loadingDialog.stopAlert();
-                                        Toasty.success(getApplicationContext(), "Email has been sent", Toast.LENGTH_LONG, true).show();
-                                        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_REF, MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putString(TEXT, dropDownValue);
-                                        editor.apply();
-                                        mEmail.setText("");
-                                        mPassword.setText("");
-                                        mReenterPassword.setText("");
-                                        mNICnumber.setText("");
-                                        Intent intent = new Intent(DriverLogInActivity.this, driverSetting.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        intent.putExtra("officerPoliceStation", dropDownValue);
-                                        startActivity(intent);
+                                        Toasty.error(getApplicationContext(), "You are already registered", Toast.LENGTH_LONG, true).show();
                                     } else {
-                                        Toasty.success(getApplicationContext(), "Email Not sent", Toast.LENGTH_LONG, true).show();
+                                        Toasty.error(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG, true).show();
                                     }
+                                    Toasty.error(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG, true).show();
+                                } else {
+                                    String user_id = mAuth.getCurrentUser().getUid();
+                                    DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(dropDownValue + user_id).child("email");
+                                    DatabaseReference currentUserNIC = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(dropDownValue + user_id);
+                                    DatabaseReference addStationName = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(user_id);
+                                    addStationName.child("stationLocation").setValue(dropDownValue);
+
+                                    final FirebaseUser user = mAuth.getCurrentUser();
+                                    user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                loadingDialog.stopAlert();
+                                                Toasty.success(getApplicationContext(), "Email has been sent.Please ckeck this", Toast.LENGTH_LONG, true).show();
+                                                SharedPreferences sharedPreferences = getSharedPreferences(SHARED_REF, MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.putString(TEXT, dropDownValue);
+                                                editor.apply();
+                                                emailaddress.setText("");
+                                                mPassword.setText("");
+                                                mReenterPassword.setText("");
+                                                mNICnumber.setText("");
+                                                Intent intent = new Intent(DriverLogInActivity.this, driverSetting.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                intent.putExtra("officerPoliceStation", dropDownValue);
+                                                startActivity(intent);
+                                            } else {
+                                                Toasty.success(getApplicationContext(), "Email Not sent", Toast.LENGTH_LONG, true).show();
+                                            }
+                                        }
+                                    });
+                                    current_user_db.setValue(true);
+                                    currentUserNIC.setValue(true);
                                 }
-                            });
-                            currnt_user_db.setValue(true);
-                            curretUserNIC.setValue(true);
-                        }
-                    }
-                });
+                            }
+                        });
+
+
             }
         });
 
