@@ -25,6 +25,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import javax.swing.Spring;
+
 import es.dmoral.toasty.Toasty;
 
 public class customerLoginActivity extends AppCompatActivity {
@@ -69,18 +71,9 @@ public class customerLoginActivity extends AppCompatActivity {
 
         mregisterLinerLayout.setVisibility(View.VISIBLE);
         mloginLenerLayout.setVisibility(View.GONE);
-
-        YoYo.with(Techniques.FadeInUp).duration(1500).playOn(mEmail);
-        YoYo.with(Techniques.FadeInUp).duration(2000).playOn(mPassword);
-        YoYo.with(Techniques.FadeInUp).duration(2500).playOn(mReenterPassword);
-        YoYo.with(Techniques.FadeInUp).duration(3000).playOn(mNICnumber);
+ 
 
 
-//        if(mAuth.getCurrentUser() != null){
-//            Intent intent = new Intent(customerLoginActivity.this, splashScreen.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(intent);
-//        }
 
         LoadingDialog loadingDialog =new LoadingDialog(customerLoginActivity.this);
 
@@ -162,58 +155,45 @@ public class customerLoginActivity extends AppCompatActivity {
                     loadingDialog.stratAlertAnimation();
 
                 }
-                mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(customerLoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(!task.isSuccessful()){
-                               if(task.getException() instanceof FirebaseAuthUserCollisionException){
-                                   loadingDialog.stopAlert();
-                                   Toasty.error(getApplicationContext(),"You are already registered", Toast.LENGTH_LONG, true).show();
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        //tesing done by nuwan
 
-
-                                   return;
-
-                               }else{
-                                   Toasty.error(getApplicationContext(),task.getException().getMessage(), Toast.LENGTH_LONG, true).show();
-
-
-
-                               }
-                            Toasty.error(getApplicationContext(),"Check your internet connect", Toast.LENGTH_LONG, true).show();
-
-
-                        }else{
-
-                            String user_id = mAuth.getCurrentUser().getUid();
-                            DatabaseReference currnt_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(user_id);
-
-                            DatabaseReference curretUserNIC = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(user_id).child("UserNIC").child(nicNumber);
-
-                            final FirebaseUser user = mAuth.getCurrentUser();
-                            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                       if(task.isSuccessful()){
-                                           Toasty.success(getApplicationContext(),"Email has sent", Toast.LENGTH_LONG, true).show();
-                                           Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                           startActivity(intent);
-
-
-                                       }else{
-                                           Toasty.error(getApplicationContext(),"Email not sent", Toast.LENGTH_LONG, true).show();
-
-
-
-                                       }
+                        .addOnCompleteListener(customerLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (!task.isSuccessful()) {
+                                    print("goood");
+                                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                        loadingDialog.stopAlert();
+                                        Toasty.error(getApplicationContext(), "You are already registered", Toast.LENGTH_LONG, true).show();
+                                    } else {
+                                        Toasty.error(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_LONG, true).show();
+                                    }
+                                    Toasty.error(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG, true).show();
+                                } else {
+                                    String user_id = mAuth.getCurrentUser().getUid();
+                                    DatabaseReference currentUserDb = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(user_id);
+                                    DatabaseReference currentUserNIC = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(user_id).child("UserNIC").child(nicNumber);
+                                    final FirebaseUser user = mAuth.getCurrentUser();
+                                    user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toasty.success(getApplicationContext(), "Email has been sent", Toast.LENGTH_LONG, true).show();
+                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(intent);
+                                            } else {
+                                                Toasty.error(getApplicationContext(), "Email not sent", Toast.LENGTH_LONG, true).show();
+                                            }
+                                        }
+                                    });
+                                    currentUserDb.setValue(true);
+                                    currentUserNIC.setValue(true);
                                 }
-                            });
-                            currnt_user_db.setValue(true);
-                            curretUserNIC.setValue(true);
+                            }
+                        });
 
-                        }
-                    }
-                });
             }
         });
 
